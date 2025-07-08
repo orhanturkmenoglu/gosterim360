@@ -46,6 +46,7 @@ GÖSTERİM360 kullanıcıları aşağıdaki adımlarla sistemi kullanır:
 
 ---
 
+
 ## 🧭 Kullanım Akışı
 
 1. 🎞 Film & seans seçimi  
@@ -53,6 +54,20 @@ GÖSTERİM360 kullanıcıları aşağıdaki adımlarla sistemi kullanır:
 3. 💳 Stripe ile ödeme  
 4. 📩 QR + SMS/Email bilet gönderimi  
 5. 🏷️ Salon girişinde QR okuma ile geçiş  
+
+---
+
+### 🗄️ Veritabanı Seçimi
+
+Projemizde **Oracle Database 19c** kullanılmaktadır.
+
+#### Neden Oracle DB?  
+- Kurumsal seviyede güçlü performans ve ölçeklenebilirlik  
+- Yüksek veri güvenliği ve sağlamlık  
+- Karmaşık ilişkisel veri modellerini destekleme kapasitesi  
+- Güvenilirlik ve geniş kurumsal destek  
+
+Bu sayede, sinema salonlarının karmaşık seans, koltuk, rezervasyon ve ödeme verileri tutarlı ve hızlı şekilde yönetilir.
 
 ---
 
