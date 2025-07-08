@@ -71,6 +71,26 @@ Bu sayede, sinema salonlarının karmaşık seans, koltuk, rezervasyon ve ödeme
 
 ---
 
+
+## 🔐 Güvenlik
+
+- Admin paneli JWT tabanlı yetkilendirme ile korunur  
+- Stripe ödemeleri PCI DSS uyumludur  
+- QR kod token'ları tek kullanımlık ve zaman kısıtlıdır  
+- HTTPS zorunludur  
+
+---
+
+## ✨ Öne Çıkan Özellikler
+
+✅ AI destekli koltuk önerisi  
+✅ QR destekli hızlı giriş  
+✅ Stripe ödeme entegrasyonu  
+✅ Gerçek zamanlı koltuk güncellemeleri  
+✅ Docker + Kafka + Redis ile kurumsal seviye yapı  
+
+---
+
 ## 🧱 Teknoloji Yığını
 
 | Katman         | Teknoloji                            | Açıklama                              |
@@ -119,6 +139,24 @@ AdminUser
 
 ---
 
+
+
+## 🗺 Kullanım Akış Diyagramı
+
+```
+Kullanıcı 
+  ↓ 
+Film → Seans → Koltuk (AI önerili)  
+  ↓ 
+Ödeme (Stripe)  
+  ↓ 
+QR Bilet + Bildirim  
+  ↓ 
+Salon Giriş QR Okuma  
+```
+
+---
+
 ## 🔗 API Endpointleri
 
 ### 🎟️ Kullanıcı
@@ -139,15 +177,6 @@ AdminUser
 
 ---
 
-## 🔐 Güvenlik
-
-- Admin paneli JWT tabanlı yetkilendirme ile korunur  
-- Stripe ödemeleri PCI DSS uyumludur  
-- QR kod token'ları tek kullanımlık ve zaman kısıtlıdır  
-- HTTPS zorunludur  
-
----
-
 ## ⚙️ DevOps & CI/CD
 
 - Tüm servisler Docker ile containerize edilir  
@@ -157,26 +186,6 @@ AdminUser
   - Oracle DB Cluster  
   - Redis HA  
   - Kafka Cluster  
-
----
-
-## 🧩 Frontend Özellikleri
-
-- React + Tailwind ile responsive arayüz  
-- Stripe Elements ile güvenli ödeme  
-- AI koltuk önerili seçim ekranı  
-- QR kod gösterimi ve saklama  
-- Admin panel: film & seans yönetimi + raporlama  
-
----
-
-## ✨ Öne Çıkan Özellikler
-
-✅ AI destekli koltuk önerisi  
-✅ QR destekli hızlı giriş  
-✅ Stripe ödeme entegrasyonu  
-✅ Gerçek zamanlı koltuk güncellemeleri  
-✅ Docker + Kafka + Redis ile kurumsal seviye yapı  
 
 ---
 
@@ -215,22 +224,6 @@ AdminUser
 
 ---
 
-## 🗺 Kullanım Akış Diyagramı
-
-```
-Kullanıcı 
-  ↓ 
-Film → Seans → Koltuk (AI önerili)  
-  ↓ 
-Ödeme (Stripe)  
-  ↓ 
-QR Bilet + Bildirim  
-  ↓ 
-Salon Giriş QR Okuma  
-```
-
----
-
 ## 🧑‍💻 Katkıda Bulun
 
 Bu projeye katkıda bulunmak için PR gönderin veya [Issue açın](https://github.com/your-repo/gosterim360/issues).
@@ -246,4 +239,4 @@ Bu proje MIT lisansı ile lisanslanmıştır. Ayrıntılar için `LICENSE` dosya
 ## 💬 İletişim
 
 Geliştirici: [Orhan Türkmenoğlu](https://github.com/orhanturkmenoglu)  
-Email: orhan@example.com
+Email: orhantrkmn749@gmail.com
