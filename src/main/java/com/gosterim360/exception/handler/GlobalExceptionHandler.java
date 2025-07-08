@@ -1,26 +1,28 @@
 package com.gosterim360.exception.handler;
 
+import com.gosterim360.common.BaseResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException exception) {
+    public ResponseEntity<BaseResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException exception,
+                                                                         HttpServletRequest request) {
 
-        Map<String, String> errors = new HashMap<>();
+        List<String> errorMessages = exception.getBindingResult().getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .toList();
 
-        exception.getBindingResult().getFieldErrors()
-                .forEach(error -> {
-                    errors.put(error.getField(), error.getDefaultMessage());
-                });
-
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.badRequest().body(BaseResponse.failure("VALIDATION FAILED",
+                HttpStatus.BAD_REQUEST.value(),request.getRequestURI(),errorMessages));
     }
 }

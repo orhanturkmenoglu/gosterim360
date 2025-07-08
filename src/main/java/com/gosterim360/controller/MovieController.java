@@ -1,5 +1,6 @@
 package com.gosterim360.controller;
 
+import com.gosterim360.common.BaseResponse;
 import com.gosterim360.dto.request.MovieRequestDTO;
 import com.gosterim360.dto.response.MovieResponseDTO;
 import com.gosterim360.service.MovieService;
@@ -20,31 +21,42 @@ public class MovieController {
     private final MovieService movieService;
 
     @PostMapping
-    public ResponseEntity<MovieResponseDTO> createMovie(@Valid @RequestBody MovieRequestDTO movieRequestDTO) {
+    public ResponseEntity<BaseResponse<MovieResponseDTO>> createMovie(@Valid @RequestBody MovieRequestDTO movieRequestDTO) {
         MovieResponseDTO movie = movieService.createMovie(movieRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(movie);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BaseResponse.success(movie,"Movie created successfully",HttpStatus.CREATED.value()));
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieResponseDTO>> getAllMovies() {
-        return ResponseEntity.ok(movieService.getAllMovies());
+    public ResponseEntity<BaseResponse<List<MovieResponseDTO>>> getAllMovies() {
+        List<MovieResponseDTO> movies = movieService.getAllMovies();
+        return ResponseEntity.ok(
+                BaseResponse.success(movies, "Movies retrieved successfully", 200)
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieResponseDTO> getMovieById(@PathVariable UUID id) {
-        return ResponseEntity.ok(movieService.getMovieById(id));
+    public ResponseEntity<BaseResponse<MovieResponseDTO>> getMovieById(@PathVariable UUID id) {
+        MovieResponseDTO movie = movieService.getMovieById(id);
+        return ResponseEntity.ok(
+                BaseResponse.success(movie, "Movie found", 200)
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MovieResponseDTO> updateMovie(@PathVariable UUID id,
-                                                        @Valid @RequestBody MovieRequestDTO movieRequestDTO) {
+    public ResponseEntity<BaseResponse<MovieResponseDTO>> updateMovie(@PathVariable UUID id,
+                                                                      @Valid @RequestBody MovieRequestDTO movieRequestDTO) {
         MovieResponseDTO updatedMovie = movieService.updateMovie(id, movieRequestDTO);
-        return ResponseEntity.ok(updatedMovie);
+        return ResponseEntity.ok(
+                BaseResponse.success(updatedMovie, "Movie updated successfully", 200)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMovieById(@PathVariable UUID id) {
+    public ResponseEntity<BaseResponse<Void>> deleteMovieById(@PathVariable UUID id) {
         movieService.deleteMovieById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                BaseResponse.success(null, "Movie deleted successfully", 200)
+        );
     }
 }
