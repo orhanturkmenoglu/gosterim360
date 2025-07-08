@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+
+spring:
+  application:
+    name: GOSTERIM360
+  datasource:
+    url:
+    username:
+    password:
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+
+
+
