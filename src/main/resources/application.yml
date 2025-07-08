@@ -17,6 +17,9 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
-
+springdoc:
+  api-docs:
+    version: openapi_3_0
+    path: /swagger-ui.html
 
 
