@@ -81,6 +81,14 @@ Bu sayede, sinema salonlarının karmaşık seans, koltuk, rezervasyon ve ödeme
 
 ---
 
+## ⚙️ DevOps & CI/CD
+
+- Tüm servisler Docker ile containerize edilir  
+- CI/CD: GitHub Actions veya Jenkins üzerinden:  
+  `Build → Test → Docker Image → Deploy`
+
+---
+
 ## ✨ Öne Çıkan Özellikler
 
 ✅ AI destekli koltuk önerisi  
@@ -139,8 +147,6 @@ AdminUser
 
 ---
 
-
-
 ## 🗺 Kullanım Akış Diyagramı
 
 ```
@@ -175,19 +181,6 @@ Salon Giriş QR Okuma
 - `POST /admin/sessions` → Yeni seans ekle  
 - `GET /admin/reports` → Raporlar  
 
----
-
-## ⚙️ DevOps & CI/CD
-
-- Tüm servisler Docker ile containerize edilir  
-- CI/CD: GitHub Actions veya Jenkins üzerinden:  
-  `Build → Test → Docker Image → Deploy`  
-- Production ortamı:  
-  - Oracle DB Cluster  
-  - Redis HA  
-  - Kafka Cluster  
-
----
 
 ## 🧪 Örnek Request / Response
 
