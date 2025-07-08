@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,6 +33,17 @@ public class MovieServiceImpl implements MovieService {
 
         log.info("MovieServiceImpl:: createMovie finished");
         return MovieMapper.toDTO(savedMovie);
+    }
+
+    @Override
+    public List<MovieResponseDTO> getAllMovies() {
+        log.info("MovieServiceImpl:: getAllMovies started");
+
+        List<Movie> movies = movieRepository.findAll();
+        log.info("MovieServiceImpl:: movies found  {}", movies);
+
+        log.info("MovieServiceImpl:: getAllMovies finished");
+        return MovieMapper.toDTOList(movies);
     }
 
     @Override
