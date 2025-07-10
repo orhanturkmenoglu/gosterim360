@@ -11,6 +11,11 @@ public class MovieMapper extends BaseMapper<Movie,MovieResponseDTO,MovieRequestD
 
     @Override
     public MovieResponseDTO toDTO(Movie entity) {
+
+        if (entity == null) {
+            return null;
+        }
+
         return MovieResponseDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
@@ -27,6 +32,12 @@ public class MovieMapper extends BaseMapper<Movie,MovieResponseDTO,MovieRequestD
 
     @Override
     public Movie toEntity(MovieRequestDTO request) {
+
+        if (request == null) {
+            return null;
+        }
+
+
         return Movie.builder()
                 .name(request.getName())
                 .description(request.getDescription())
