@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@Schema(name = "SalonResponseDTO", description = "Response DTO representing a cinema hall (salon) with all details")
+@Schema(name = "SalonResponseDTO", description = "Response DTO representing a cinema hall with all details")
 public class SalonResponseDTO {
 
     @Schema(
@@ -21,34 +21,34 @@ public class SalonResponseDTO {
     private UUID id;
 
     @Schema(
-            description = "Name of the cinema hall",
-            example = "Caspian Cinema Hall",
+            description = "The name of the cinema hall",
+            example = "Grand London Cinema",
             maxLength = 100
     )
     private String name;
 
     @Schema(
-            description = "Location/address of the cinema hall",
-            example = "Baku, Nizami street 123",
+            description = "The location or address of the cinema hall",
+            example = "221B Baker Street, London",
             maxLength = 200
     )
     private String location;
 
     @Schema(
-            description = "Total seat capacity of the hall",
+            description = "Total seat capacity of the cinema hall",
             example = "150",
             minimum = "1"
     )
     private Integer seatCapacity;
 
     @Schema(
-            description = "Creation timestamp",
+            description = "Creation timestamp of the cinema hall record",
             example = "2025-07-08T10:30:00Z"
     )
     private Instant createdAt;
 
     @Schema(
-            description = "Last update timestamp",
+            description = "Last update timestamp of the cinema hall record",
             example = "2025-07-09T11:15:00Z"
     )
     private Instant updatedAt;

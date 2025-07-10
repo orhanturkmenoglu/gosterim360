@@ -16,31 +16,28 @@ import lombok.NoArgsConstructor;
 public class SalonRequestDTO {
 
     @Schema(
-            description = "Name of the cinema hall",
-            example = "Caspian Cinema Hall",
-            maxLength = 100,
-            required = true
+            description = "The name of the cinema hall",
+            example = "Grand London Cinema",
+            maxLength = 100
     )
     @NotBlank(message = "Name must not be blank")
     @Size(max = 100, message = "Name must be at most 100 characters")
-    private String isim;
+    private String name;
 
     @Schema(
-            description = "Location/address of the cinema hall",
-            example = "Baku, Nizami street 123",
-            maxLength = 200,
-            required = true
+            description = "The location or address of the cinema hall",
+            example = "221B Baker Street, London",
+            maxLength = 200
     )
     @NotBlank(message = "Location must not be blank")
     @Size(max = 200, message = "Location must be at most 200 characters")
-    private String lokasyon;
+    private String location;
 
     @Schema(
-            description = "Total seat capacity of the hall",
+            description = "Total seat capacity of the cinema hall",
             example = "150",
-            minimum = "1",
-            required = true
+            minimum = "1"
     )
     @Min(value = 1, message = "Seat capacity must be at least 1")
-    private int koltukKapasitesi;
+    private int seatCapacity;
 }
