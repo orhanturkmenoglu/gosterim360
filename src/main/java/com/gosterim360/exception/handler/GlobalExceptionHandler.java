@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // Salon exceptions
     @ExceptionHandler(SalonNotFoundException.class)
     public ResponseEntity<BaseResponse<Void>> handleSalonNotFound(SalonNotFoundException exception, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -92,6 +93,68 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // Reservation exceptions
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleReservationNotFound(ReservationNotFoundException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                BaseResponse.failure(
+                        exception.getMessage(),
+                        HttpStatus.NOT_FOUND.value(),
+                        request.getRequestURI(),
+                        List.of(exception.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(ReservationAlreadyExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleReservationAlreadyExists(ReservationAlreadyExistsException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                BaseResponse.failure(
+                        exception.getMessage(),
+                        HttpStatus.CONFLICT.value(),
+                        request.getRequestURI(),
+                        List.of(exception.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(ReservationSeatUnavailableException.class)
+    public ResponseEntity<BaseResponse<Void>> handleReservationSeatUnavailable(ReservationSeatUnavailableException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                BaseResponse.failure(
+                        exception.getMessage(),
+                        HttpStatus.CONFLICT.value(),
+                        request.getRequestURI(),
+                        List.of(exception.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(ReservationStatusInvalidException.class)
+    public ResponseEntity<BaseResponse<Void>> handleReservationStatusInvalid(ReservationStatusInvalidException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                BaseResponse.failure(
+                        exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getRequestURI(),
+                        List.of(exception.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(ReservationDeleteNotAllowedException.class)
+    public ResponseEntity<BaseResponse<Void>> handleReservationDeleteNotAllowed(ReservationDeleteNotAllowedException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                BaseResponse.failure(
+                        exception.getMessage(),
+                        HttpStatus.FORBIDDEN.value(),
+                        request.getRequestURI(),
+                        List.of(exception.getMessage())
+                )
+        );
+    }
+
+    // Generic exception handler
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Void>> handleGenericException(Exception exception, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(

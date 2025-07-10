@@ -1,14 +1,12 @@
 package com.gosterim360.model;
 
+import com.gosterim360.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -17,10 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "salon")
-public class Salon {
-    @Id
-    @GeneratedValue
-    private UUID id;
+public class Salon extends BaseEntity<UUID> {
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -30,12 +25,4 @@ public class Salon {
 
     @Column(name = "seat_capacity", nullable = false)
     private int seatCapacity;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }
