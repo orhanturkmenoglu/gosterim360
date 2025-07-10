@@ -1,5 +1,6 @@
 package com.gosterim360.common;
 
+import com.gosterim360.dto.response.SalonResponseDTO;
 import lombok.*;
 
 import java.time.Instant;
@@ -50,4 +51,6 @@ public class BaseResponse<T> {
                 .timestamp(Instant.now())
                 .build();
     }
+
+
 }

@@ -22,11 +22,14 @@ public class Salon {
     @GeneratedValue
     private UUID id;
 
-    private String isim;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-    private String lokasyon;
+    @Column(nullable = false, length = 200)
+    private String location;
 
-    private int koltukKapasitesi;
+    @Column(name = "seat_capacity", nullable = false)
+    private int seatCapacity;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
