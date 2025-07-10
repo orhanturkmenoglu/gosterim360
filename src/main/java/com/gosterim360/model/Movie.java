@@ -1,10 +1,11 @@
 package com.gosterim360.model;
 
 
-import jakarta.persistence.*;
+import com.gosterim360.common.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -14,10 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Movie {
-
-    @Id
-    private UUID id;
+public class Movie extends BaseEntity<UUID> {
 
     private String name;
 
@@ -32,21 +30,4 @@ public class Movie {
     private Integer reviewCount;
 
     private String posterUrl;
-
-    private Instant createdAt;
-    private Instant updatedAt;
-
-
-    @PrePersist
-    public void onCreate() {
-        this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
-    }
-
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
 }
