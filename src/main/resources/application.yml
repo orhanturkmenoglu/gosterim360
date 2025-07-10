@@ -17,9 +17,11 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
 springdoc:
   api-docs:
     version: openapi_3_0
     path: /swagger-ui.html
-
 

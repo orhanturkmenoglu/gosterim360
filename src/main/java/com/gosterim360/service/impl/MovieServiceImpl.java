@@ -1,5 +1,6 @@
 package com.gosterim360.service.impl;
 
+import com.gosterim360.common.MessageUtil;
 import com.gosterim360.dto.request.MovieRequestDTO;
 import com.gosterim360.dto.response.MovieResponseDTO;
 import com.gosterim360.exception.MovieNotFoundException;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
+    private final MessageUtil messageUtil;
 
     @Override
     public MovieResponseDTO createMovie(MovieRequestDTO movieRequestDTO) {
@@ -51,7 +53,7 @@ public class MovieServiceImpl implements MovieService {
        log.info("MovieServiceImpl:: getMovieById started");
 
         Movie movie = movieRepository.findById(id)
-                .orElseThrow(() -> new MovieNotFoundException("Movie not found"));
+                .orElseThrow(() -> new MovieNotFoundException(messageUtil.getMessage("movie.notfound", id)));
         log.info("MovieServiceImpl:: movie found  {}", movie);
 
 
