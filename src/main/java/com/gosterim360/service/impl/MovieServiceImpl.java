@@ -22,19 +22,20 @@ public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
     private final MessageUtil messageUtil;
+    private final MovieMapper movieMapper;
 
     @Override
     public MovieResponseDTO createMovie(MovieRequestDTO movieRequestDTO) {
         log.info("MovieServiceImpl:: createMovie started");
 
-        Movie movie= MovieMapper.toEntity(movieRequestDTO);
+        Movie movie = movieMapper.toEntity(movieRequestDTO);
         log.info("MovieServiceImpl:: movie toEntity   {}", movie);
 
         Movie savedMovie = movieRepository.save(movie);
         log.info("MovieServiceImpl:: saved movie  {}", savedMovie);
 
         log.info("MovieServiceImpl:: createMovie finished");
-        return MovieMapper.toDTO(savedMovie);
+        return movieMapper.toDTO(savedMovie);
     }
 
     @Override
@@ -45,12 +46,12 @@ public class MovieServiceImpl implements MovieService {
         log.info("MovieServiceImpl:: movies found  {}", movies);
 
         log.info("MovieServiceImpl:: getAllMovies finished");
-        return MovieMapper.toDTOList(movies);
+        return movieMapper.toDTOList(movies);
     }
 
     @Override
     public MovieResponseDTO getMovieById(UUID id) {
-       log.info("MovieServiceImpl:: getMovieById started");
+        log.info("MovieServiceImpl:: getMovieById started");
 
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(messageUtil.getMessage("movie.notfound", id)));
@@ -58,7 +59,7 @@ public class MovieServiceImpl implements MovieService {
 
 
         log.info("MovieServiceImpl:: getMovieById finished");
-        return MovieMapper.toDTO(movie);
+        return movieMapper.toDTO(movie);
     }
 
     @Override
