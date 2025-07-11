@@ -48,4 +48,21 @@ public class MovieMapper extends BaseMapper<Movie,MovieResponseDTO,MovieRequestD
                 .posterUrl(request.getPosterUrl())
                 .build();
     }
+
+
+    public Movie toEntity(MovieResponseDTO movieResponseDTO){
+        if (movieResponseDTO == null) {
+            return null;
+        }
+
+       return Movie.builder()
+               .name(movieResponseDTO.getName())
+               .description(movieResponseDTO.getDescription())
+               .genre(movieResponseDTO.getGenre())
+               .duration(movieResponseDTO.getDuration())
+               .rating(movieResponseDTO.getRating())
+               .reviewCount(movieResponseDTO.getReviewCount())
+               .posterUrl(movieResponseDTO.getPosterUrl())
+               .build();
+    }
 }
