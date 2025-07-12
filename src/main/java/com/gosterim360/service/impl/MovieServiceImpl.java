@@ -34,7 +34,7 @@ public class MovieServiceImpl implements MovieService {
 
         Optional<Movie> optionalMovie  = movieRepository.findMovieByName(movieRequestDTO.getName());
 
-        if (!optionalMovie.isPresent()){
+        if (optionalMovie.isPresent()){
             log.error("MovieServiceImpl:: createMovie failed ");
             throw new MovieNotFoundException(messageUtil.getMessage("movie.already.exists",movieRequestDTO.getName()));
         }

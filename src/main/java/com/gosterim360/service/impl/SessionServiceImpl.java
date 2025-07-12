@@ -26,19 +26,6 @@ public class SessionServiceImpl implements SessionService {
     private final MessageUtil messageUtil;
 
     @Override
-    public SessionResponseDTO createSession(SessionRequestDTO dto) {
-        log.info("SessionServiceImpl:: createSession started - Request: {}", dto);
-
-        Session session = sessionMapper.toEntity(dto);
-        Session saved = sessionRepository.save(session);
-
-        log.info("SessionServiceImpl:: session created with ID: {}", saved.getId());
-        log.info("SessionServiceImpl:: createSession finished");
-
-        return sessionMapper.toDTO(saved);
-    }
-
-    @Override
     public List<SessionResponseDTO> getAllSessions() {
         log.info("SessionServiceImpl:: getAllSessions started");
 
