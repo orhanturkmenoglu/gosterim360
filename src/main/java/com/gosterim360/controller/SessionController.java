@@ -27,23 +27,6 @@ public class SessionController {
     private final SessionService sessionService;
 
     @Operation(
-            summary = "Create new session",
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "Session created successfully",
-                            content = @Content(schema = @Schema(implementation = SessionResponseDTO.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid request data",
-                            content = @Content)
-            }
-    )
-    @PostMapping
-    public ResponseEntity<SessionResponseDTO> createSession(
-            @Parameter(description = "Session request DTO", required = true)
-            @Valid @RequestBody SessionRequestDTO dto) {
-        SessionResponseDTO created = sessionService.createSession(dto);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
-    }
-
-    @Operation(
             summary = "Get all sessions",
             responses = {
                     @ApiResponse(responseCode = "200", description = "List of sessions",
