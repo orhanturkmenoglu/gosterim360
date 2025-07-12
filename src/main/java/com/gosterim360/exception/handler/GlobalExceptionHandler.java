@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AbstractExceptionHandler.class)
     public ResponseEntity<BaseResponse<Void>> handleMovieAlreadyExists(AbstractExceptionHandler exception, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+        return ResponseEntity.status(exception.getHttpStatus()).body(
                 BaseResponse.failure(
                         exception.getMessage(),
                         exception.getHttpStatus().value(),
