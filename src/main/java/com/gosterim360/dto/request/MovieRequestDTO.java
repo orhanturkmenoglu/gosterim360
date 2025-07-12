@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -43,4 +45,8 @@ public class MovieRequestDTO {
     @Schema(description = "URL to the movie poster", example = "https://example.com/poster.jpg", required = true)
     @NotEmpty(message = "Poster URL is required")
     private String posterUrl;
+
+    @Schema(description = "List of sessions for the movie", required = true)
+    @NotEmpty(message = "At least one session is required")
+    private List<SessionRequestDTO> sessions;
 }

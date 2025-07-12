@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -43,4 +44,7 @@ public class MovieResponseDTO {
 
     @Schema(description = "Last update timestamp", example = "2025-07-09T11:15:00Z")
     private Instant updatedAt;
+
+    @Schema(description = "List of sessions associated with the movie")
+    private List<SessionResponseDTO> sessionResponseDTOList;
 }

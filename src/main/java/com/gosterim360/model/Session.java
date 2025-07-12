@@ -26,4 +26,8 @@ public class Session extends BaseEntity<UUID> {
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    @ManyToOne
+    @JoinColumn(name = "movie_id",nullable = false)
+    private  Movie movie;
 }
