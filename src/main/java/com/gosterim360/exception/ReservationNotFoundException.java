@@ -1,7 +1,10 @@
 package com.gosterim360.exception;
 
-public class ReservationNotFoundException extends RuntimeException {
+import com.gosterim360.exception.handler.AbstractExceptionHandler;
+import org.springframework.http.HttpStatus;
+
+public class ReservationNotFoundException extends AbstractExceptionHandler {
     public ReservationNotFoundException(String message) {
-        super(message);
+        super(message, HttpStatus.NOT_FOUND);
     }
 }

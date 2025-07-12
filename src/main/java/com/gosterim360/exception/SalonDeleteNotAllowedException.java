@@ -1,7 +1,10 @@
 package com.gosterim360.exception;
 
-public class SalonDeleteNotAllowedException extends RuntimeException {
+import com.gosterim360.exception.handler.AbstractExceptionHandler;
+import org.springframework.http.HttpStatus;
+
+public class SalonDeleteNotAllowedException extends AbstractExceptionHandler {
     public SalonDeleteNotAllowedException(String message) {
-        super(message);
+        super(message, HttpStatus.FORBIDDEN);
     }
 }

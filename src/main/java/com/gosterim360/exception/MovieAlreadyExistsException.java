@@ -1,7 +1,10 @@
 package com.gosterim360.exception;
 
-public class MovieAlreadyExistsException extends RuntimeException {
+import com.gosterim360.exception.handler.AbstractExceptionHandler;
+import org.springframework.http.HttpStatus;
+
+public class MovieAlreadyExistsException extends AbstractExceptionHandler {
     public MovieAlreadyExistsException(String message) {
-        super(message);
+        super(message, HttpStatus.CONFLICT);
     }
 }

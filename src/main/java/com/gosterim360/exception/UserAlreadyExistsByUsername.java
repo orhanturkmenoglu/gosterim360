@@ -1,7 +1,10 @@
 package com.gosterim360.exception;
 
-public class UserAlreadyExistsByUsername extends RuntimeException {
+import com.gosterim360.exception.handler.AbstractExceptionHandler;
+import org.springframework.http.HttpStatus;
+
+public class UserAlreadyExistsByUsername extends AbstractExceptionHandler {
     public UserAlreadyExistsByUsername(String message) {
-        super(message);
+        super(message, HttpStatus.CONFLICT);
     }
 }

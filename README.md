@@ -225,7 +225,7 @@ Bu projeye katkıda bulunmak için PR gönderin veya [Issue açın](https://gith
 
 ## 📄 Lisans
 
-Bu proje MIT lisansı ile lisanslanmıştır. Ayrıntılar için `LICENSE` dosyasına bakınız.
+Bu proje MIT lisansı ile lisanslanmıştır. Ayrıntılar için [LICENSE](LICENSE) dosyasına bakınız.
 
 ---
 

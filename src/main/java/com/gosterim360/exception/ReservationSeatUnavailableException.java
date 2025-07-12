@@ -1,7 +1,10 @@
 package com.gosterim360.exception;
 
-public class ReservationSeatUnavailableException extends RuntimeException {
+import com.gosterim360.exception.handler.AbstractExceptionHandler;
+import org.springframework.http.HttpStatus;
+
+public class ReservationSeatUnavailableException extends AbstractExceptionHandler {
     public ReservationSeatUnavailableException(String message) {
-        super(message);
+        super(message, HttpStatus.CONFLICT);
     }
 }
