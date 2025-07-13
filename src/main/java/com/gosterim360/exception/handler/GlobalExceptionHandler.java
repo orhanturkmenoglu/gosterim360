@@ -179,7 +179,56 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Generic exception handler
+    // Seat exceptions (BaseResponse ilə)
+    @ExceptionHandler(SeatAlreadyExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleSeatAlreadyExistsException(SeatAlreadyExistsException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                BaseResponse.failure(
+                        ex.getMessage(),
+                        HttpStatus.CONFLICT.value(),
+                        request.getRequestURI(),
+                        List.of(ex.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(SeatNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleSeatNotFoundException(SeatNotFoundException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                BaseResponse.failure(
+                        ex.getMessage(),
+                        HttpStatus.NOT_FOUND.value(),
+                        request.getRequestURI(),
+                        List.of(ex.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(InvalidSeatNumberException.class)
+    public ResponseEntity<BaseResponse<Void>> handleInvalidSeatNumberException(InvalidSeatNumberException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                BaseResponse.failure(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getRequestURI(),
+                        List.of(ex.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(SeatRowOutOfBoundsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleSeatRowOutOfBoundsException(SeatRowOutOfBoundsException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                BaseResponse.failure(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getRequestURI(),
+                        List.of(ex.getMessage())
+                )
+        );
+    }
+
+    // Generic Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Void>> handleGenericException(Exception exception, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
