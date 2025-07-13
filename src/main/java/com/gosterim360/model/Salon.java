@@ -2,11 +2,9 @@ package com.gosterim360.model;
 
 import com.gosterim360.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -25,4 +23,7 @@ public class Salon extends BaseEntity<UUID> {
 
     @Column(name = "seat_capacity", nullable = false)
     private int seatCapacity;
+
+    @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats;
 }
