@@ -6,12 +6,12 @@ import com.gosterim360.enums.ReservationStatus;
 import com.gosterim360.exception.*;
 import com.gosterim360.mapper.ReservationMapper;
 import com.gosterim360.model.Reservation;
+import com.gosterim360.model.Seat;
+import com.gosterim360.model.Session;
 import com.gosterim360.repository.ReservationRepository;
 import com.gosterim360.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public ReservationResponseDTO create(ReservationRequestDTO request) {
         log.info("Attempting to create reservation for session: {}, seat: {}", request.getSessionId(), request.getSeatId());
-        if (reservationRepository.existsBySessionIdAndSeatId(request.getSessionId(), request.getSeatId())) {
+        if (reservationRepository.existsBySession_IdAndSeat_Id(request.getSessionId(), request.getSeatId())) {
             log.warn("Reservation creation failed: seat already reserved for this session");
             throw new ReservationAlreadyExistsException("This seat is already reserved for the selected session.");
         }
@@ -54,8 +54,12 @@ public class ReservationServiceImpl implements ReservationService {
                     log.warn("Reservation update failed: id '{}' not found", id);
                     return new ReservationNotFoundException("Reservation not found.");
                 });
-        if (!reservation.getSessionId().equals(request.getSessionId()) || !reservation.getSeatId().equals(request.getSeatId())) {
-            if (reservationRepository.existsBySessionIdAndSeatId(request.getSessionId(), request.getSeatId())) {
+
+        UUID currentSessionId = reservation.getSession() != null ? reservation.getSession().getId() : null;
+        UUID currentSeatId = reservation.getSeat() != null ? reservation.getSeat().getId() : null;
+
+        if (!currentSessionId.equals(request.getSessionId()) || !currentSeatId.equals(request.getSeatId())) {
+            if (reservationRepository.existsBySession_IdAndSeat_Id(request.getSessionId(), request.getSeatId())) {
                 log.warn("Reservation update failed: seat already reserved for this session");
                 throw new ReservationSeatUnavailableException("This seat is already reserved for the selected session.");
             }
@@ -64,8 +68,14 @@ public class ReservationServiceImpl implements ReservationService {
             log.warn("Reservation update failed: invalid status '{}'", request.getStatus());
             throw new ReservationStatusInvalidException("Invalid reservation status.");
         }
-        reservation.setSessionId(request.getSessionId());
-        reservation.setSeatId(request.getSeatId());
+
+        Session session = new Session();
+        session.setId(request.getSessionId());
+        Seat seat = new Seat();
+        seat.setId(request.getSeatId());
+
+        reservation.setSession(session);
+        reservation.setSeat(seat);
         reservation.setStatus(request.getStatus());
         Reservation updated = reservationRepository.saveAndFlush(reservation);
         log.info("Reservation updated successfully with id: {}", updated.getId());
@@ -118,7 +128,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(readOnly = true)
     public List<ReservationResponseDTO> getBySessionId(UUID sessionId) {
         log.info("Fetching reservations for session: {}", sessionId);
-        List<ReservationResponseDTO> reservations = reservationRepository.findAllBySessionId(sessionId)
+        List<ReservationResponseDTO> reservations = reservationRepository.findAllBySession_Id(sessionId)
                 .stream()
                 .map(reservationMapper::toDTO)
                 .collect(Collectors.toList());

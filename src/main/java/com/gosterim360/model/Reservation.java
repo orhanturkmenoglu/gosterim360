@@ -16,11 +16,13 @@ import java.util.UUID;
 @Table(name = "reservation")
 public class Reservation extends BaseEntity<UUID> {
 
-    @Column(name = "session_id", nullable = false)
-    private UUID sessionId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "session_id", nullable = false)
+    private Session session;
 
-    @Column(name = "seat_id", nullable = false)
-    private UUID seatId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seat seat;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
