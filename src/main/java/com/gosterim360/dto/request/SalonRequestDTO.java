@@ -28,4 +28,5 @@ public class SalonRequestDTO {
     @Schema(description = "Total seat capacity of the cinema hall", example = "150", minimum = "1")
     @Min(value = 1, message = "Seat capacity must be at least 1")
     private int seatCapacity;
+
 }

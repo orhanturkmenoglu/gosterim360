@@ -103,4 +103,15 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<BaseResponse<Void>> handleSeatAlreadyExistsException(DataIntegrityViolationException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                BaseResponse.failure(
+                        ex.getMessage(),
+                        HttpStatus.CONFLICT.value(),
+                        request.getRequestURI(),
+                        List.of(ex.getMessage())
+                )
+        );
+    }
 }
