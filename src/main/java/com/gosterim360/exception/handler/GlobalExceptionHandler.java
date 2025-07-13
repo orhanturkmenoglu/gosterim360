@@ -32,6 +32,31 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // Movie Exceptions
+    @ExceptionHandler(MovieAlreadyExistsException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMovieAlreadyExists(MovieAlreadyExistsException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                BaseResponse.failure(
+                        exception.getMessage(),
+                        HttpStatus.CONFLICT.value(),
+                        request.getRequestURI(),
+                        List.of(exception.getMessage())
+                )
+        );
+    }
+
+    @ExceptionHandler(MovieNotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleMovieNotFound(MovieNotFoundException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                BaseResponse.failure(
+                        exception.getMessage(),
+                        HttpStatus.NOT_FOUND.value(),
+                        request.getRequestURI(),
+                        List.of(exception.getMessage())
+                )
+        );
+    }
+
     // Salon exceptions
     @ExceptionHandler(SalonNotFoundException.class)
     public ResponseEntity<BaseResponse<Void>> handleSalonNotFound(SalonNotFoundException exception, HttpServletRequest request) {

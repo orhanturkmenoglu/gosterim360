@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public interface SessionService {
 
-    SessionResponseDTO createSession(SessionRequestDTO sessionRequestDTO);
-
     List<SessionResponseDTO> getAllSessions();
 
     SessionResponseDTO getSessionById(UUID id);

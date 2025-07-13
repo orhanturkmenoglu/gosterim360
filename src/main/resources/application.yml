@@ -6,9 +6,9 @@ spring:
   application:
     name: GOSTERIM360
   datasource:
-    url:
-    username:
-    password:
+    url: jdbc:mysql://localhost:3306/gosterim360
+    username: root
+    password: 12345
   jpa:
     show-sql: true
     generate-ddl: true
@@ -18,7 +18,7 @@ spring:
     hibernate:
       ddl-auto: update
   messages:
-    basename: i18n/messages
+    basename: messages
     encoding: UTF-8
 springdoc:
   api-docs:

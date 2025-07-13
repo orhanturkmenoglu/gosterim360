@@ -66,4 +66,23 @@ public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, Sessi
 
         return session;
     }
+
+
+    public Session toEntity(SessionResponseDTO responseDTO) {
+        if (responseDTO == null) {
+            return null;
+        }
+
+        List<SessionTime> sessionTimes = responseDTO.getTimes().stream()
+                .map(timeDto ->
+                        SessionTime.builder()
+                                .time(timeDto.getTime())
+                                .build())
+                .toList();
+
+        return Session.builder()
+                .times(sessionTimes)
+                .price(responseDTO.getPrice())
+                .build();
+    }
 }
