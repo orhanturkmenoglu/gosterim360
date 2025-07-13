@@ -1,7 +1,10 @@
 package com.gosterim360.exception;
 
-public class MovieNotFoundException extends RuntimeException {
+import com.gosterim360.exception.handler.AbstractExceptionHandler;
+import org.springframework.http.HttpStatus;
+
+public class MovieNotFoundException extends AbstractExceptionHandler {
     public MovieNotFoundException(String message) {
-        super(message);
+        super(message, HttpStatus.NOT_FOUND);
     }
 }
