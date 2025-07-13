@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Seat API", description = "Operations related to cinema seats")
+@Tag(name = "Seat", description = "Operations related to cinema seats")
 @RestController
 @RequestMapping("/api/v1/seats")
 @RequiredArgsConstructor

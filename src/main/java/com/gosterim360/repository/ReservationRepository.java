@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
-    Optional<Reservation> findBySessionIdAndSeatId(UUID sessionId, UUID seatId);
-    List<Reservation> findAllBySessionId(UUID sessionId);
-    boolean existsBySessionIdAndSeatId(UUID sessionId, UUID seatId);
+    Optional<Reservation> findBySession_IdAndSeat_Id(UUID sessionId, UUID seatId);
+    List<Reservation> findAllBySession_Id(UUID sessionId);
+    boolean existsBySession_IdAndSeat_Id(UUID sessionId, UUID seatId);
 }
