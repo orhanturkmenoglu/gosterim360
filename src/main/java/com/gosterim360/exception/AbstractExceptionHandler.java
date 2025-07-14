@@ -1,4 +1,4 @@
-package com.gosterim360.exception.handler;
+package com.gosterim360.exception;
 
 import org.springframework.http.HttpStatus;
 
