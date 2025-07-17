@@ -1,7 +1,6 @@
 package com.gosterim360.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gosterim360.common.BaseResponse;
 import com.gosterim360.dto.request.ReservationRequestDTO;
 import com.gosterim360.dto.response.ReservationResponseDTO;
 import com.gosterim360.enums.ReservationStatus;
