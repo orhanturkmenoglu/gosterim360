@@ -95,4 +95,11 @@ public class SessionController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(BaseResponse.success(null, "Session deleted successfully", HttpStatus.NO_CONTENT.value()));
     }
+
+    @GetMapping("/films/{filmId}/sessions")
+    public ResponseEntity<BaseResponse<List<SessionResponseDTO>>> getSessionsByFilmId(
+            @PathVariable UUID filmId) {
+        List<SessionResponseDTO> sessions = sessionService.getSessionsByFilmId(filmId);
+        return ResponseEntity.ok(BaseResponse.success(sessions, "Sessions for film retrieved", HttpStatus.OK.value()));
+    }
 }

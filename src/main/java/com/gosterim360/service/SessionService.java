@@ -15,4 +15,6 @@ public interface SessionService {
     SessionResponseDTO updateSession(UUID id, SessionRequestDTO sessionRequestDTO);
 
     void deleteSessionById(UUID id);
+
+    List<SessionResponseDTO> getSessionsByFilmId(UUID filmId);
 }
