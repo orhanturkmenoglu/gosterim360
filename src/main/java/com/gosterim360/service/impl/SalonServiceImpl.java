@@ -24,6 +24,7 @@ public class SalonServiceImpl implements SalonService {
     private static final Logger log = LoggerFactory.getLogger(SalonServiceImpl.class);
 
     private final SalonRepository salonRepository;
+    private final SalonMapper salonMapper;
 
     @Override
     @Transactional
@@ -37,10 +38,10 @@ public class SalonServiceImpl implements SalonService {
             log.warn("Cinema hall creation failed: invalid seat capacity ({})", request.getSeatCapacity());
             throw new SalonSeatCapacityInvalidException("Seat capacity must be at least 1.");
         }
-        Salon salon = SalonMapper.toEntity(request);
+        Salon salon = salonMapper.toEntity(request);
         Salon saved = salonRepository.saveAndFlush(salon);
         log.info("Cinema hall created successfully with id: {}", saved.getId());
-        return SalonMapper.toDTO(saved);
+        return salonMapper.toDTO(saved);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class SalonServiceImpl implements SalonService {
         salon.setSeatCapacity(request.getSeatCapacity());
         Salon updated = salonRepository.saveAndFlush(salon);
         log.info("Cinema hall updated successfully with id: {}", updated.getId());
-        return SalonMapper.toDTO(updated);
+        return salonMapper.toDTO(updated);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class SalonServiceImpl implements SalonService {
                     return new SalonNotFoundException("Cinema hall not found.");
                 });
         log.info("Cinema hall fetched successfully with id: {}", id);
-        return SalonMapper.toDTO(salon);
+        return salonMapper.toDTO(salon);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class SalonServiceImpl implements SalonService {
         log.info("Fetching all cinema halls");
         List<SalonResponseDTO> salons = salonRepository.findAll()
                 .stream()
-                .map(SalonMapper::toDTO)
+                .map(salonMapper::toDTO)
                 .collect(Collectors.toList());
         log.info("Fetched {} cinema halls", salons.size());
         return salons;
