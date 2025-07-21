@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,13 +23,10 @@ public class SessionRequestDTO {
     @Schema(description = "Session date", example = "2025-07-05", required = true)
     private LocalDate date;
 
-
     @NotEmpty(message = "Session times cannot be empty")
     @Schema(description = "List of session times", required = true)
     private List<SessionTimeRequestDTO> times;
 
-    @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be positive")
-    @Schema(description = "Price of the session", example = "95.5", required = true)
-    private BigDecimal price;
+    @NotNull(message = "Salon ID cannot be null")
+    private UUID salonId;
 }

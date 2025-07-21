@@ -1,12 +1,10 @@
 package com.gosterim360.model;
 
 import com.gosterim360.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,6 +19,9 @@ public class SessionTime extends BaseEntity<UUID> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Session session;
+
+    // seans bazlı fiyat farklılaşabilir.
+    private BigDecimal price;
 
     private LocalDateTime time;
 

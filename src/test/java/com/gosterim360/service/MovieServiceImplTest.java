@@ -5,7 +5,6 @@ import com.gosterim360.dto.request.MovieRequestDTO;
 import com.gosterim360.dto.request.SessionRequestDTO;
 import com.gosterim360.dto.request.SessionTimeRequestDTO;
 import com.gosterim360.dto.response.MovieResponseDTO;
-import com.gosterim360.exception.MovieNotFoundException;
 import com.gosterim360.mapper.MovieMapper;
 import com.gosterim360.model.Movie;
 import com.gosterim360.repository.MovieRepository;
@@ -20,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,6 +47,7 @@ public class MovieServiceImplTest {
     @BeforeEach
     public void setUp() {
         sessionTimeRequestDTO = SessionTimeRequestDTO.builder()
+                .price(BigDecimal.valueOf(95.5))
                 .time(LocalDateTime.of(2025, 7, 15, 18, 30))
                 .build();
 
@@ -56,7 +55,6 @@ public class MovieServiceImplTest {
 
         sessionRequestDTO = SessionRequestDTO.builder()
                 .date(LocalDate.of(2025, 7, 15))
-                .price(BigDecimal.valueOf(125.00))
                 .times(sessionTimeList)
                 .build();
 

@@ -3,7 +3,6 @@ package com.gosterim360.mapper;
 import com.gosterim360.common.BaseMapper;
 import com.gosterim360.dto.request.MovieRequestDTO;
 import com.gosterim360.dto.request.SessionRequestDTO;
-import com.gosterim360.dto.request.SessionTimeRequestDTO;
 import com.gosterim360.dto.response.MovieResponseDTO;
 import com.gosterim360.dto.response.SessionResponseDTO;
 import com.gosterim360.dto.response.SessionTimeResponseDTO;
@@ -39,7 +38,6 @@ public class MovieMapper extends BaseMapper<Movie, MovieResponseDTO, MovieReques
                     return SessionResponseDTO.builder()
                             .id(session.getId())
                             .date(session.getDate())
-                            .price(session.getPrice())
                             .times(timeDTOs)
                             .createdAt(session.getCreatedAt())
                             .updatedAt(session.getUpdatedAt())
@@ -123,7 +121,6 @@ public class MovieMapper extends BaseMapper<Movie, MovieResponseDTO, MovieReques
     private Session mapSessionRequestToEntity(SessionRequestDTO dto, Movie movie) {
         Session session = Session.builder()
                 .date(dto.getDate())
-                .price(dto.getPrice())
                 .movie(movie) // kritik: movie_id burada bağlanıyor
                 .build();
 

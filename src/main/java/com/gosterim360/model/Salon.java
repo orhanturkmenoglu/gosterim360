@@ -26,4 +26,5 @@ public class Salon extends BaseEntity<UUID> {
 
     @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seat> seats;
+
 }

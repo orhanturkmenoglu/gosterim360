@@ -54,28 +54,27 @@ public class SessionServiceImplTest {
         sessionId = UUID.randomUUID();
 
         SessionTime sessionTime = new SessionTime();
+        sessionTime.setPrice(BigDecimal.valueOf(95.5));
         sessionTime.setTime(LocalDateTime.of(2025, 7, 15, 18, 30));
 
         session = new Session();
         session.setId(sessionId);
         session.setDate(LocalDate.of(2025, 7, 15));
-        session.setPrice(BigDecimal.valueOf(100));
         session.setTimes(new ArrayList<>(List.of(sessionTime)));
 
         SessionTimeRequestDTO timeDTO = SessionTimeRequestDTO.builder()
+                .price(BigDecimal.valueOf(95.5))
                 .time(LocalDateTime.of(2025, 7, 15, 18, 30))
                 .build();
 
         sessionRequestDTO = SessionRequestDTO.builder()
                 .date(LocalDate.of(2025, 7, 15))
-                .price(BigDecimal.valueOf(150))
                 .times(List.of(timeDTO))
                 .build();
 
         sessionResponseDTO = SessionResponseDTO.builder()
                 .id(sessionId)
                 .date(LocalDate.of(2025, 7, 15))
-                .price(BigDecimal.valueOf(150))
                 .build();
     }
 

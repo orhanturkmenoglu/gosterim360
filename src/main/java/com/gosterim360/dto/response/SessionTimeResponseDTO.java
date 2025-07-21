@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,9 +22,14 @@ public class SessionTimeResponseDTO {
     @Schema(description = "Session time", example = "20:00:00")
     private LocalDateTime time;
 
+    @Schema(description = "Price of the session", example = "95.5", required = true)
+    private BigDecimal price;
+
     @Schema(description = "Creation date of the session time", example = "2024-03-28T12:00:00Z")
     private Instant createdAt;
 
     @Schema(description = "Last update date of the session time", example = "2024-03-28T12:00:00Z")
     private Instant updatedAt;
+
+
 }

@@ -24,10 +24,11 @@ public class Session extends BaseEntity<UUID> {
     @OneToMany(mappedBy = "session",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     private List<SessionTime> times;
 
-    @Column(nullable = false)
-    private BigDecimal price;
-
     @ManyToOne
     @JoinColumn(name = "movie_id",nullable = false)
     private  Movie movie;
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id",nullable = false)
+    private Salon salon;
 }
