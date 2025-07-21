@@ -23,6 +23,9 @@ class SalonServiceImplTest {
     @Mock
     private SalonRepository salonRepository;
 
+    @Mock
+    private SalonMapper salonMapper;
+
     @InjectMocks
     private SalonServiceImpl salonService;
 
@@ -35,18 +38,21 @@ class SalonServiceImplTest {
     @DisplayName("Should create a new salon successfully")
     void testCreateSalonSuccess() {
         SalonRequestDTO request = new SalonRequestDTO("Test", "Loc", 100);
-        Salon salon = SalonMapper.toEntity(request);
-        Salon saved = SalonMapper.toEntity(request);
+        Salon salon = Salon.builder().name("Test").location("Loc").seatCapacity(100).build();
+        Salon saved = Salon.builder().name("Test").location("Loc").seatCapacity(100).build();
         saved.setId(UUID.randomUUID());
+        SalonResponseDTO responseDTO = SalonResponseDTO.builder().id(saved.getId()).name("Test").location("Loc").seatCapacity(100).build();
 
         when(salonRepository.existsByName("Test")).thenReturn(false);
-        when(salonRepository.saveAndFlush(any(Salon.class))).thenReturn(saved);
+        when(salonMapper.toEntity(request)).thenReturn(salon);
+        when(salonRepository.saveAndFlush(salon)).thenReturn(saved);
+        when(salonMapper.toDTO(saved)).thenReturn(responseDTO);
 
         SalonResponseDTO response = salonService.create(request);
 
         assertNotNull(response);
         assertEquals("Test", response.getName());
-        verify(salonRepository).saveAndFlush(any(Salon.class));
+        verify(salonRepository).saveAndFlush(salon);
     }
 
     @Test
@@ -76,10 +82,12 @@ class SalonServiceImplTest {
         SalonRequestDTO request = new SalonRequestDTO("NewName", "NewLoc", 200);
         Salon existing = Salon.builder().name("OldName").location("OldLoc").seatCapacity(100).build();
         existing.setId(id);
+        SalonResponseDTO responseDTO = SalonResponseDTO.builder().id(id).name("NewName").location("NewLoc").seatCapacity(200).build();
 
         when(salonRepository.findById(id)).thenReturn(Optional.of(existing));
         when(salonRepository.existsByName("NewName")).thenReturn(false);
-        when(salonRepository.saveAndFlush(any(Salon.class))).thenReturn(existing);
+        when(salonRepository.saveAndFlush(existing)).thenReturn(existing);
+        when(salonMapper.toDTO(existing)).thenReturn(responseDTO);
 
         SalonResponseDTO response = salonService.update(id, request);
 
@@ -154,8 +162,10 @@ class SalonServiceImplTest {
         UUID id = UUID.randomUUID();
         Salon existing = Salon.builder().name("Name").location("Loc").seatCapacity(100).build();
         existing.setId(id);
+        SalonResponseDTO responseDTO = SalonResponseDTO.builder().id(id).name("Name").location("Loc").seatCapacity(100).build();
 
         when(salonRepository.findById(id)).thenReturn(Optional.of(existing));
+        when(salonMapper.toDTO(existing)).thenReturn(responseDTO);
 
         SalonResponseDTO response = salonService.getById(id);
 
@@ -179,7 +189,11 @@ class SalonServiceImplTest {
                 Salon.builder().name("A").location("L1").seatCapacity(10).build(),
                 Salon.builder().name("B").location("L2").seatCapacity(20).build()
         );
+        SalonResponseDTO dto1 = SalonResponseDTO.builder().id(UUID.randomUUID()).name("A").location("L1").seatCapacity(10).build();
+        SalonResponseDTO dto2 = SalonResponseDTO.builder().id(UUID.randomUUID()).name("B").location("L2").seatCapacity(20).build();
         when(salonRepository.findAll()).thenReturn(salons);
+        when(salonMapper.toDTO(salons.get(0))).thenReturn(dto1);
+        when(salonMapper.toDTO(salons.get(1))).thenReturn(dto2);
 
         List<SalonResponseDTO> result = salonService.getAll();
 
@@ -188,16 +202,15 @@ class SalonServiceImplTest {
         assertEquals("B", result.get(1).getName());
     }
 
-
     @Test
     @DisplayName("Should throw exception if name is null on create")
     void testCreateSalonNullName() {
         SalonRequestDTO request = new SalonRequestDTO(null, "Loc", 100);
         when(salonRepository.existsByName(null)).thenReturn(false);
+        when(salonMapper.toEntity(request)).thenReturn(Salon.builder().name(null).location("Loc").seatCapacity(100).build());
 
         assertThrows(Exception.class, () -> salonService.create(request));
     }
-
 
     @Test
     @DisplayName("Should throw exception if seatCapacity is negative")
@@ -215,6 +228,11 @@ class SalonServiceImplTest {
                 .mapToObj(i -> Salon.builder().name("Salon" + i).location("Loc" + i).seatCapacity(i + 1).build())
                 .collect(Collectors.toList());
         when(salonRepository.findAll()).thenReturn(salons);
+        for (int i = 0; i < salons.size(); i++) {
+            Salon s = salons.get(i);
+            SalonResponseDTO dto = SalonResponseDTO.builder().id(UUID.randomUUID()).name(s.getName()).location(s.getLocation()).seatCapacity(s.getSeatCapacity()).build();
+            when(salonMapper.toDTO(s)).thenReturn(dto);
+        }
 
         List<SalonResponseDTO> result = salonService.getAll();
 
@@ -227,13 +245,17 @@ class SalonServiceImplTest {
     @DisplayName("Should not allow duplicate salon names concurrently")
     void testConcurrentCreateDuplicateName() throws InterruptedException, ExecutionException {
         SalonRequestDTO request = new SalonRequestDTO("Concurrent", "Loc", 100);
+        Salon salon = Salon.builder().name("Concurrent").location("Loc").seatCapacity(100).build();
+        Salon saved = Salon.builder().name("Concurrent").location("Loc").seatCapacity(100).build();
+        saved.setId(UUID.randomUUID());
+        SalonResponseDTO responseDTO = SalonResponseDTO.builder().id(saved.getId()).name("Concurrent").location("Loc").seatCapacity(100).build();
 
         when(salonRepository.existsByName("Concurrent"))
                 .thenReturn(false)
                 .thenReturn(true); // 2nd thread sees as duplicate
-
-        when(salonRepository.saveAndFlush(any(Salon.class)))
-                .thenReturn(SalonMapper.toEntity(request));
+        when(salonMapper.toEntity(request)).thenReturn(salon);
+        when(salonRepository.saveAndFlush(salon)).thenReturn(saved);
+        when(salonMapper.toDTO(saved)).thenReturn(responseDTO);
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
         Callable<Object> createTask = () -> {
@@ -259,14 +281,16 @@ class SalonServiceImplTest {
     @Test
     @DisplayName("SalonMapper toEntity and toDTO should work correctly")
     void testSalonMapper() {
+        // Bu testdə real SalonMapper istifadə olunur
+        SalonMapper realMapper = new com.gosterim360.mapper.SalonMapper();
         SalonRequestDTO request = new SalonRequestDTO("Test", "Loc", 100);
-        Salon salon = SalonMapper.toEntity(request);
+        Salon salon = realMapper.toEntity(request);
         assertEquals("Test", salon.getName());
         assertEquals("Loc", salon.getLocation());
         assertEquals(100, salon.getSeatCapacity());
 
         salon.setId(UUID.randomUUID());
-        SalonResponseDTO dto = SalonMapper.toDTO(salon);
+        SalonResponseDTO dto = realMapper.toDTO(salon);
         assertEquals("Test", dto.getName());
         assertEquals("Loc", dto.getLocation());
         assertEquals(100, dto.getSeatCapacity());
@@ -300,10 +324,18 @@ class SalonServiceImplTest {
     void testPerformanceCreateManySalons() {
         int count = 1000;
         when(salonRepository.existsByName(anyString())).thenReturn(false);
+        when(salonMapper.toEntity(any(SalonRequestDTO.class))).thenAnswer(invocation -> {
+            SalonRequestDTO req = invocation.getArgument(0);
+            return Salon.builder().name(req.getName()).location(req.getLocation()).seatCapacity(req.getSeatCapacity()).build();
+        });
         when(salonRepository.saveAndFlush(any(Salon.class))).thenAnswer(invocation -> {
             Salon s = invocation.getArgument(0);
             s.setId(UUID.randomUUID());
             return s;
+        });
+        when(salonMapper.toDTO(any(Salon.class))).thenAnswer(invocation -> {
+            Salon s = invocation.getArgument(0);
+            return SalonResponseDTO.builder().id(s.getId()).name(s.getName()).location(s.getLocation()).seatCapacity(s.getSeatCapacity()).build();
         });
 
         long start = System.currentTimeMillis();

@@ -96,4 +96,15 @@ public class SessionServiceImpl implements SessionService {
 
         log.info("SessionServiceImpl:: deleteSessionById finished - Deleted ID: {}", id);
     }
+
+    @Override
+    public List<SessionResponseDTO> getSessionsByFilmId(UUID filmId) {
+        log.info("SessionServiceImpl:: getSessionsByFilmId started - filmId: {}", filmId);
+        List<SessionResponseDTO> sessions = sessionRepository.findByMovie_Id(filmId)
+                .stream()
+                .map(sessionMapper::toDTO)
+                .toList();
+        log.info("SessionServiceImpl:: getSessionsByFilmId finished - Found {} sessions", sessions.size());
+        return sessions;
+    }
 }
