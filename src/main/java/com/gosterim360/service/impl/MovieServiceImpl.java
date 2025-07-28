@@ -3,7 +3,6 @@ package com.gosterim360.service.impl;
 import com.gosterim360.common.MessageUtil;
 import com.gosterim360.dto.request.MovieRequestDTO;
 import com.gosterim360.dto.response.MovieResponseDTO;
-import com.gosterim360.exception.MovieAlreadyExistsException;
 import com.gosterim360.exception.MovieNotFoundException;
 import com.gosterim360.mapper.MovieMapper;
 import com.gosterim360.model.Movie;
@@ -12,6 +11,8 @@ import com.gosterim360.service.MovieService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,11 +33,11 @@ public class MovieServiceImpl implements MovieService {
     public MovieResponseDTO createMovie(MovieRequestDTO movieRequestDTO) {
         log.info("MovieServiceImpl:: createMovie started");
 
-        Optional<Movie> optionalMovie  = movieRepository.findMovieByName(movieRequestDTO.getName());
+        Optional<Movie> optionalMovie = movieRepository.findMovieByName(movieRequestDTO.getName());
 
-        if (optionalMovie.isPresent()){
+        if (optionalMovie.isPresent()) {
             log.error("MovieServiceImpl:: createMovie failed ");
-            throw new MovieNotFoundException(messageUtil.getMessage("movie.already.exists",movieRequestDTO.getName()));
+            throw new MovieNotFoundException(messageUtil.getMessage("movie.already.exists", movieRequestDTO.getName()));
         }
 
         Movie movie = movieMapper.toEntity(movieRequestDTO);
@@ -47,6 +48,79 @@ public class MovieServiceImpl implements MovieService {
 
         log.info("MovieServiceImpl:: createMovie finished");
         return movieMapper.toDTO(savedMovie);
+    }
+
+    @Override
+    public List<MovieResponseDTO> searchMovies(String keyword) {
+        log.info("MovieServiceImpl:: searchMovies started");
+
+        List<Movie> movies = movieRepository.
+                findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrGenreContainingIgnoreCase(keyword, keyword, keyword);
+
+        log.info("MovieServiceImpl::movies {}",movies);
+
+        log.info("MovieServiceImpl:: searchMovies finished");
+
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+
+    }
+
+    @Override
+    public List<MovieResponseDTO> getMoviesByGenre(String genre) {
+        log.info("MovieServiceImpl:: getMoviesByGenre started");
+        List<Movie> movies = movieRepository.findMovieByGenreIgnoreCase(genre);
+
+
+        log.info("MovieServiceImpl:: getMoviesByGenre finished");
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getMoviesByRatingGreaterThan(Double rating) {
+        log.info("MovieServiceImpl:: getMoviesByRatingGreaterThan started");
+        List<Movie> movies = movieRepository.findByRatingGreaterThan(rating);
+
+        log.info("MovieServiceImpl:: getMoviesByRatingGreaterThan finished");
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getAllMoviesSortedByRating() {
+        log.info("MovieServiceImpl:: getAllMoviesSortedByRating started");
+        List<Movie> movies = movieRepository.findAllByOrderByRatingDesc();
+
+        log.info("MovieServiceImpl:: getAllMoviesSortedByRating finished");
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getAllMoviesSortedByReviewCount() {
+        List<Movie> movies = movieRepository.findAllByOrderByReviewCountDesc();
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getAllMoviesSortedByCreatedDate() {
+        List<Movie> movies = movieRepository.findAllByOrderByCreatedAtDesc();
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public Page<MovieResponseDTO> getMovies(Pageable pageable) {
+        return movieRepository.findAll(pageable)
+                .map(movieMapper::toDTO);
     }
 
     @Override
