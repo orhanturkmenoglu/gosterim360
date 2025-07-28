@@ -29,5 +29,5 @@ public class Session extends BaseEntity<UUID> {
 
     @ManyToOne
     @JoinColumn(name = "salon_id",nullable = false)
-    private Salon salon;
+    private Salon salon;  // her gösterimin bir salonu olmalıdır.
 }

@@ -25,4 +25,13 @@ public class SessionTime extends BaseEntity<UUID> {
 
     private LocalDateTime time;
 
+
+
+    // frontent
+    // öncelikle ilişkileri tam ayarlamamız lazım
+    // payment ve qr halletmemiz lazım
+    // security kısımı
+
+
+
 }

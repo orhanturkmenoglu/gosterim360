@@ -4,6 +4,7 @@ import com.gosterim360.common.BaseMapper;
 import com.gosterim360.dto.request.SessionRequestDTO;
 import com.gosterim360.dto.response.SessionResponseDTO;
 import com.gosterim360.dto.response.SessionTimeResponseDTO;
+import com.gosterim360.model.Salon;
 import com.gosterim360.model.Session;
 import com.gosterim360.model.SessionTime;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,12 @@ public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, Sessi
                 .date(request.getDate())
                 .build();
 
+        if (request.getSalonId() != null) {
+            Salon salon = new Salon();
+            salon.setId(request.getSalonId());
+            session.setSalon(salon);
+        }
+
         if (request.getTimes() != null) {
             List<SessionTime> times = request.getTimes().stream()
                     .map(timeDTO -> {
@@ -82,6 +89,7 @@ public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, Sessi
 
         return Session.builder()
                 .times(sessionTimes)
+                .date(responseDTO.getDate())
                 .build();
     }
 }

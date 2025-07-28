@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,4 +31,8 @@ public class SalonRequestDTO {
     @Min(value = 1, message = "Seat capacity must be at least 1")
     private int seatCapacity;
 
+    @Schema(description = "List of seats in the salon")
+    @Size(min = 1, message = "At least one seat must be provided")
+    private List<SeatRequestDTO> seatRequestDTOList;
+    // Böylece salon oluşturulurken mutlaka en az 1 koltuk bilgisi gönderilmesi garanti altına alınır.
 }

@@ -27,4 +27,38 @@ public class Reservation extends BaseEntity<UUID> {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ReservationStatus status;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // user_id eklenecek.
+    // yani hangi kullanıcının rezerve ettiği görülecek.
+    // ticket alanı olacak bilet
+
+    // 🎟️ Ticket
+    //id
+    //
+    //seat_reservation_id
+    //
+    //qr_code
+    //
+    //sent_via (SMS, Email)
+    //
+    //status (DELIVERED, FAILED)
+
+    /*
+    Koltuk Seçimi ve Rezerve Etme (10 dk süreli)
+
+    Stripe ile Ödeme
+
+    Bilet Teslimi (Email + SMS + QR)
+
+    QR ile Temassız Giriş
+
+    Canlı Bildirimler (Örn. kampanya, doluluk uyarısı)
+
+
+     */
 }

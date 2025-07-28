@@ -16,6 +16,10 @@ import java.util.UUID;
 @Builder
 public class ReservationRequestDTO {
 
+    @Schema(description = "Unique identifier of the user making the reservation", example = "e3f4a5b6-7890-12ab-cdef-3456789012cd")
+    @NotNull(message = "User ID must not be null")
+    private UUID userId;
+
     @Schema(description = "Unique identifier of the session for which the seat is being reserved", example = "a1b2c3d4-5678-90ab-cdef-1234567890ab")
     @NotNull(message = "Session ID must not be null")
     private UUID sessionId;
@@ -27,4 +31,5 @@ public class ReservationRequestDTO {
     @Schema(description = "Status of the reservation. Allowed values: PRE_RESERVED, PAID", example = "PRE_RESERVED")
     @NotNull(message = "Status must not be null")
     private ReservationStatus status;
+
 }

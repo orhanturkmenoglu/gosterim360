@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -31,4 +32,7 @@ public class SalonResponseDTO {
 
     @Schema(description = "Last update timestamp of the cinema hall record", example = "2025-07-09T11:15:00Z")
     private Instant updatedAt;
+
+    @Schema(description = "List of seats in the cinema hall")
+    private List<SeatResponseDTO> seats;
 }

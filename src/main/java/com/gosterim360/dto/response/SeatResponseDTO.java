@@ -3,6 +3,8 @@ package com.gosterim360.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,7 +13,7 @@ import lombok.*;
 public class SeatResponseDTO {
 
     @Schema(description = "Unique identifier of the seat", example = "a1b2c3d4-e5f6-7890-abcd-1234567890ef")
-    private String id;
+    private UUID id;
 
     @Schema(description = "ID of the salon to which the seat belongs", example = "1")
     private String salonId;

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class SessionTimeRequestDTO {
 
     @NotNull(message = "Time cannot be null")
-    @Schema(description = "Session time", example = "20:00:00", required = true)
+    @Schema(description = "Session time", example = "2025-07-28T20:00:00", required = true)
     private LocalDateTime time;
 
     @NotNull(message = "Price cannot be null")

@@ -18,6 +18,8 @@ public class UserResponseDTO {
 
     private UUID id;
     private String username;
+    private String firstName;
+    private String lastName;
     private String email;
     private String phone;
     private List<Role> roles;

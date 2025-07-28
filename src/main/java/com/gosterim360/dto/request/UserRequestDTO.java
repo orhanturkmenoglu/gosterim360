@@ -15,6 +15,8 @@ import java.util.List;
 public class UserRequestDTO {
 
     private String username;
+    private String firstName;
+    private String lastName;
     private String password;
     private String email;
     private String phone;

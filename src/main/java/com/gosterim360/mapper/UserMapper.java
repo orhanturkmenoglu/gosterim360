@@ -16,6 +16,8 @@ public class UserMapper extends BaseMapper<User, UserResponseDTO, UserRequestDTO
 
         return User.builder()
                 .username(request.getUsername())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .password(request.getPassword())
                 .email(request.getEmail())
                 .phone(request.getPhone())
@@ -30,6 +32,8 @@ public class UserMapper extends BaseMapper<User, UserResponseDTO, UserRequestDTO
         return UserResponseDTO.builder()
                 .id(entity.getId())
                 .username(entity.getUsername())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
                 .roles(entity.getRoles())
