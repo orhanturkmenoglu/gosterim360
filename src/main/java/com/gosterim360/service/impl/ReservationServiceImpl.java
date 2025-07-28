@@ -42,6 +42,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationMapper.toEntity(request);
         Reservation saved = reservationRepository.saveAndFlush(reservation);
         log.info("Reservation created successfully with id: {}", saved.getId());
+
         return reservationMapper.toDTO(saved);
     }
 
