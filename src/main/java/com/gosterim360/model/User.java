@@ -22,6 +22,10 @@ public class User extends BaseEntity<UUID> {
     @Column(nullable = false,unique = true)
     private String username;
 
+    private String firstName;
+
+    private String lastName;
+
     private String password;
 
     private String email;
@@ -33,4 +37,9 @@ public class User extends BaseEntity<UUID> {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private List<Role> roles;
+
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservations; // Kullanıcı koltuk rezerve edebileceği için şu ilişkiyi User tarafına ekleyebilirsin:
+
 }

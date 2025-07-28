@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SalonServiceImpl implements SalonService {
 
+    //salon anotasyon olacak slf4j
     private static final Logger log = LoggerFactory.getLogger(SalonServiceImpl.class);
 
     private final SalonRepository salonRepository;

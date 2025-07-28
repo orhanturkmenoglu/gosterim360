@@ -25,5 +25,7 @@ public class Salon extends BaseEntity<UUID> {
     private int seatCapacity;
 
     @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Seat> seats;
+    private List<Seat> seats;  // her salonun birçok koltuğu (Seat) olduğunu belirtiyor
+
+    // Seans başına koltuk seçimi ve rezervasyonu (her seans için koltuklar tekrar rezerve edilebilir olmalı).
 }

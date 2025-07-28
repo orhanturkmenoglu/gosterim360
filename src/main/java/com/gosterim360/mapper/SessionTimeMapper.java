@@ -19,6 +19,7 @@ public class SessionTimeMapper extends BaseMapper<SessionTime, SessionTimeRespon
         return SessionTimeResponseDTO.builder()
                 .id(entity.getId())
                 .time(entity.getTime())
+                .price(entity.getPrice())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
@@ -32,6 +33,7 @@ public class SessionTimeMapper extends BaseMapper<SessionTime, SessionTimeRespon
         }
 
         return SessionTime.builder()
+                .price(request.getPrice())
                 .time(request.getTime())
                 .build();
     }

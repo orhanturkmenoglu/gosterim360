@@ -4,8 +4,8 @@ import com.gosterim360.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,12 +22,13 @@ public class Session extends BaseEntity<UUID> {
     private LocalDate date;
 
     @OneToMany(mappedBy = "session",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    private List<SessionTime> times;
-
-    @Column(nullable = false)
-    private BigDecimal price;
+    private List<SessionTime> times = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "movie_id",nullable = false)
     private  Movie movie;
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id",nullable = false)
+    private Salon salon;  // her gösterimin bir salonu olmalıdır.
 }

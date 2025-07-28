@@ -51,7 +51,6 @@ class ReservationRepositoryTest {
     private Session createSession(String movieName) {
         Session session = new Session();
         session.setDate(LocalDate.now());
-        session.setPrice(BigDecimal.valueOf(10.0));
         session.setMovie(createMovie(movieName));
         return sessionRepository.save(session);
     }

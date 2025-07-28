@@ -62,7 +62,6 @@ public class SessionServiceImpl implements SessionService {
                 });
 
         session.setDate(dto.getDate());
-        session.setPrice(dto.getPrice());
 
         session.getTimes().clear();
         if (dto.getTimes() != null) {
@@ -71,6 +70,7 @@ public class SessionServiceImpl implements SessionService {
                             .map(timeDTO -> {
                                 var time = new com.gosterim360.model.SessionTime();
                                 time.setTime(timeDTO.getTime());
+                                time.setPrice(timeDTO.getPrice());
                                 time.setSession(session);
                                 return time;
                             }).toList()

@@ -24,10 +24,12 @@ public class SeatController {
     private final SeatService seatService;
 
     @Operation(summary = "Create a new seat")
-    @PostMapping
+    @PostMapping("/{salonId}")
     public ResponseEntity<BaseResponse<SeatResponseDTO>> createSeat(
+            @Parameter(description = "Salon UUID", required = true)
+            @PathVariable UUID salonId,
             @Valid @RequestBody SeatRequestDTO request) {
-        SeatResponseDTO response = seatService.createSeat(request);
+        SeatResponseDTO response = seatService.createSeat(salonId, request);
         return ResponseEntity.ok(BaseResponse.success(response, "Seat created successfully", 200));
     }
 
@@ -48,12 +50,14 @@ public class SeatController {
     }
 
     @Operation(summary = "Update seat by ID")
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/{salonId}")
     public ResponseEntity<BaseResponse<SeatResponseDTO>> updateSeat(
             @Parameter(description = "Seat UUID", required = true)
             @PathVariable UUID id,
+            @Parameter(description = "Salon UUID", required = true)
+            @PathVariable UUID salonId,
             @Valid @RequestBody SeatRequestDTO request) {
-        SeatResponseDTO response = seatService.updateSeat(id, request);
+        SeatResponseDTO response = seatService.updateSeat(id, salonId, request);
         return ResponseEntity.ok(BaseResponse.success(response, "Seat updated successfully", 200));
     }
 

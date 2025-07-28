@@ -2,16 +2,21 @@ package com.gosterim360.service.impl;
 
 import com.gosterim360.common.MessageUtil;
 import com.gosterim360.dto.request.MovieRequestDTO;
+import com.gosterim360.dto.request.SessionRequestDTO;
 import com.gosterim360.dto.response.MovieResponseDTO;
-import com.gosterim360.exception.MovieAlreadyExistsException;
 import com.gosterim360.exception.MovieNotFoundException;
 import com.gosterim360.mapper.MovieMapper;
 import com.gosterim360.model.Movie;
+import com.gosterim360.model.Salon;
+import com.gosterim360.model.Session;
 import com.gosterim360.repository.MovieRepository;
+import com.gosterim360.repository.SalonRepository;
 import com.gosterim360.service.MovieService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +29,7 @@ import java.util.UUID;
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
+    private final SalonRepository salonRepository;
     private final MessageUtil messageUtil;
     private final MovieMapper movieMapper;
 
@@ -32,21 +38,111 @@ public class MovieServiceImpl implements MovieService {
     public MovieResponseDTO createMovie(MovieRequestDTO movieRequestDTO) {
         log.info("MovieServiceImpl:: createMovie started");
 
-        Optional<Movie> optionalMovie  = movieRepository.findMovieByName(movieRequestDTO.getName());
+        Optional<Movie> optionalMovie = movieRepository.findMovieByName(movieRequestDTO.getName());
 
-        if (optionalMovie.isPresent()){
+        if (optionalMovie.isPresent()) {
             log.error("MovieServiceImpl:: createMovie failed ");
-            throw new MovieNotFoundException(messageUtil.getMessage("movie.already.exists",movieRequestDTO.getName()));
+            throw new MovieNotFoundException(messageUtil.getMessage("movie.already.exists", movieRequestDTO.getName()));
         }
 
         Movie movie = movieMapper.toEntity(movieRequestDTO);
         log.info("MovieServiceImpl:: movie toEntity   {}", movie);
+
+        List<SessionRequestDTO> sessionRequestDTOList = movieRequestDTO.getSessions();
+
+        // Her session için salon entity'sini DB'den çek ve set et
+        for (Session session : movie.getSessions()) {
+            UUID salonId = sessionRequestDTOList
+                    .stream()
+                    .filter(s -> s.getDate().equals(session.getDate()))  // Tarihle eşleştir
+                    .findFirst()
+                    .map(SessionRequestDTO::getSalonId)
+                    .orElseThrow(() -> new RuntimeException("Salon ID not found for session"));
+
+            Salon salon = salonRepository.findById(salonId)
+                    .orElseThrow(() -> new RuntimeException("Salon not found"));
+
+            session.setSalon(salon);
+        }
 
         Movie savedMovie = movieRepository.save(movie);
         log.info("MovieServiceImpl:: saved movie  {}", savedMovie);
 
         log.info("MovieServiceImpl:: createMovie finished");
         return movieMapper.toDTO(savedMovie);
+    }
+
+    @Override
+    public List<MovieResponseDTO> searchMovies(String keyword) {
+        log.info("MovieServiceImpl:: searchMovies started");
+
+        List<Movie> movies = movieRepository.
+                findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrGenreContainingIgnoreCase(keyword, keyword, keyword);
+
+        log.info("MovieServiceImpl::movies {}",movies);
+
+        log.info("MovieServiceImpl:: searchMovies finished");
+
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+
+    }
+
+    @Override
+    public List<MovieResponseDTO> getMoviesByGenre(String genre) {
+        log.info("MovieServiceImpl:: getMoviesByGenre started");
+        List<Movie> movies = movieRepository.findMovieByGenreIgnoreCase(genre);
+
+
+        log.info("MovieServiceImpl:: getMoviesByGenre finished");
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getMoviesByRatingGreaterThan(Double rating) {
+        log.info("MovieServiceImpl:: getMoviesByRatingGreaterThan started");
+        List<Movie> movies = movieRepository.findByRatingGreaterThan(rating);
+
+        log.info("MovieServiceImpl:: getMoviesByRatingGreaterThan finished");
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getAllMoviesSortedByRating() {
+        log.info("MovieServiceImpl:: getAllMoviesSortedByRating started");
+        List<Movie> movies = movieRepository.findAllByOrderByRatingDesc();
+
+        log.info("MovieServiceImpl:: getAllMoviesSortedByRating finished");
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getAllMoviesSortedByReviewCount() {
+        List<Movie> movies = movieRepository.findAllByOrderByReviewCountDesc();
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getAllMoviesSortedByCreatedDate() {
+        List<Movie> movies = movieRepository.findAllByOrderByCreatedAtDesc();
+        return movies.stream()
+                .map(movieMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public Page<MovieResponseDTO> getMovies(Pageable pageable) {
+        return movieRepository.findAll(pageable)
+                .map(movieMapper::toDTO);
     }
 
     @Override

@@ -26,9 +26,6 @@ public class SessionResponseDTO {
     @Schema(description = "List of session times")
     private List<SessionTimeResponseDTO> times;
 
-    @Schema(description = "Price of the session", example = "95.5")
-    private BigDecimal price;
-
     @Schema(description = "Creation date of the session", example = "2024-03-28T12:00:00Z")
     private Instant createdAt;
 

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,9 +14,6 @@ import lombok.*;
 @Builder
 public class SeatRequestDTO {
 
-    @Schema(description = "ID of the salon to which the seat belongs", example = "1", required = true)
-    @NotNull(message = "Salon ID must not be null")
-    private String salonId;
 
     @Schema(description = "Row number of the seat", example = "5", required = true, minimum = "1")
     @NotNull(message = "Row number must not be null")
