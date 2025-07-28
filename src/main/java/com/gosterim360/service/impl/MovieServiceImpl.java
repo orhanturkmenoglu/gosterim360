@@ -2,11 +2,15 @@ package com.gosterim360.service.impl;
 
 import com.gosterim360.common.MessageUtil;
 import com.gosterim360.dto.request.MovieRequestDTO;
+import com.gosterim360.dto.request.SessionRequestDTO;
 import com.gosterim360.dto.response.MovieResponseDTO;
 import com.gosterim360.exception.MovieNotFoundException;
 import com.gosterim360.mapper.MovieMapper;
 import com.gosterim360.model.Movie;
+import com.gosterim360.model.Salon;
+import com.gosterim360.model.Session;
 import com.gosterim360.repository.MovieRepository;
+import com.gosterim360.repository.SalonRepository;
 import com.gosterim360.service.MovieService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ import java.util.UUID;
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
+    private final SalonRepository salonRepository;
     private final MessageUtil messageUtil;
     private final MovieMapper movieMapper;
 
@@ -42,6 +47,23 @@ public class MovieServiceImpl implements MovieService {
 
         Movie movie = movieMapper.toEntity(movieRequestDTO);
         log.info("MovieServiceImpl:: movie toEntity   {}", movie);
+
+        List<SessionRequestDTO> sessionRequestDTOList = movieRequestDTO.getSessions();
+
+        // Her session için salon entity'sini DB'den çek ve set et
+        for (Session session : movie.getSessions()) {
+            UUID salonId = sessionRequestDTOList
+                    .stream()
+                    .filter(s -> s.getDate().equals(session.getDate()))  // Tarihle eşleştir
+                    .findFirst()
+                    .map(SessionRequestDTO::getSalonId)
+                    .orElseThrow(() -> new RuntimeException("Salon ID not found for session"));
+
+            Salon salon = salonRepository.findById(salonId)
+                    .orElseThrow(() -> new RuntimeException("Salon not found"));
+
+            session.setSalon(salon);
+        }
 
         Movie savedMovie = movieRepository.save(movie);
         log.info("MovieServiceImpl:: saved movie  {}", savedMovie);

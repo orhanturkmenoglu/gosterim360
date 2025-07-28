@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SeatService {
-    SeatResponseDTO createSeat(SeatRequestDTO request);
+    SeatResponseDTO createSeat(UUID salonId, SeatRequestDTO request);
 
     SeatResponseDTO getSeatById(UUID id);
 
     List<SeatResponseDTO> getAllSeats();
 
-    SeatResponseDTO updateSeat(UUID id, SeatRequestDTO request);
+    SeatResponseDTO updateSeat(UUID id, UUID salonId, SeatRequestDTO request);
 
     void deleteSeat(UUID id);
 }

@@ -20,7 +20,7 @@ public class Seat extends BaseEntity<UUID> {
     @JoinColumn(name = "salon_id", nullable = false)
     private Salon salon;
 
-    @Column(name = "row_number", nullable = false)
+    @Column(name = "`row_number`")
     private int rowNumber;
 
     @Column(name = "seat_number", nullable = false)

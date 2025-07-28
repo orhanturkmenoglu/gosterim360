@@ -128,6 +128,7 @@ public class MovieMapper extends BaseMapper<Movie, MovieResponseDTO, MovieReques
             List<SessionTime> times = dto.getTimes().stream()
                     .map(timeDTO -> SessionTime.builder()
                             .time(timeDTO.getTime())
+                            .price(timeDTO.getPrice())
                             .session(session) // kritik: session_id burada bağlanıyor
                             .build())
                     .toList();

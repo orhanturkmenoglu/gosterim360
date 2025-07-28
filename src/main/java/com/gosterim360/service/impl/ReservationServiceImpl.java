@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final ReservationMapper reservationMapper = new ReservationMapper();
+    private final ReservationMapper reservationMapper ;
 
     @Override
     @Transactional
@@ -135,4 +135,35 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("Fetched {} reservations for session: {}", reservations.size(), sessionId);
         return reservations;
     }
+
+
+  /*  Sonraki Adım: Rezervasyon Sonrası İşlemleri ve İş Akışı Yönetimi
+1. Rezervasyon Sonrası:
+    Rezervasyon yapıldıktan sonra, kullanıcıya rezervasyon detaylarının onaylandığı bir bildirim (email, SMS, push notification) gönderilmeli.
+
+    Rezervasyonun durumu (status) PRE_RESERVED iken, belirli bir süre içerisinde kullanıcı ödeme yapmazsa rezervasyonun iptal edilmesi (timeout mekanizması).
+
+    Ödeme onayı gelirse rezervasyonun durumu CONFIRMED olarak güncellenmeli.
+
+            2. Ödeme İşlemi Entegrasyonu:
+    Ödeme servisinin entegre edilmesi (örneğin Stripe, PayPal vb.).
+
+    Ödeme başarıyla tamamlanırsa, rezervasyon durumu güncellenmeli.
+
+    Ödeme başarısızsa veya iptal edilirse, rezervasyon iptal edilmeli.
+
+3. Koltuk Yönetimi:
+    Rezervasyon yapılırken seçilen koltukların başka bir rezervasyon tarafından bloke edilmemesi için kilitleme (locking) mekanizması eklenmeli.
+
+    Aynı koltuğun çift rezervasyonunun engellenmesi.
+
+4. Admin Paneli / Yönetim:
+    Rezervasyonların listelenmesi, filtrelenmesi, iptali veya durumu değiştirme yetkisi.
+
+    Kullanıcıların rezervasyon geçmişlerinin görüntülenmesi.
+
+            5. Gelişmiş Doğrulamalar ve Hata Yönetimi:
+    Rezervasyon yapılırken seans, koltuk, salon ve kullanıcı doğrulamalarının tam ve eksiksiz yapılması.
+
+    Hata ve edge-case senaryoları için exception handling geliştirilmesi.*/
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class Session extends BaseEntity<UUID> {
     private LocalDate date;
 
     @OneToMany(mappedBy = "session",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    private List<SessionTime> times;
+    private List<SessionTime> times = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "movie_id",nullable = false)

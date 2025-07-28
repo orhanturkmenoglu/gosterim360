@@ -3,11 +3,11 @@ package com.gosterim360.service.impl;
 import com.gosterim360.dto.request.SeatRequestDTO;
 import com.gosterim360.dto.response.SeatResponseDTO;
 import com.gosterim360.exception.*;
+import com.gosterim360.mapper.SeatMapper;
 import com.gosterim360.model.Salon;
 import com.gosterim360.model.Seat;
 import com.gosterim360.repository.SalonRepository;
 import com.gosterim360.repository.SeatRepository;
-import com.gosterim360.mapper.SeatMapper;
 import com.gosterim360.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +26,10 @@ public class SeatServiceImpl implements SeatService {
     private final SeatMapper seatMapper;
 
     @Override
-    public SeatResponseDTO createSeat(SeatRequestDTO request) {
+    public SeatResponseDTO createSeat(UUID salonId, SeatRequestDTO request) {
         log.info("Request to create seat: salonId={}, rowNumber={}, seatNumber={}",
-                request.getSalonId(), request.getRowNumber(), request.getSeatNumber());
+                salonId, request.getRowNumber(), request.getSeatNumber());
 
-        UUID salonId = parseUUID(request.getSalonId(), "Invalid salonId: " + request.getSalonId());
         Salon salon = salonRepository.findById(salonId)
                 .orElseThrow(() -> {
                     log.error("Salon not found for seat creation. salonId={}", salonId);
@@ -76,9 +75,9 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public SeatResponseDTO updateSeat(UUID id, SeatRequestDTO request) {
+    public SeatResponseDTO updateSeat(UUID id, UUID salonId, SeatRequestDTO request) {
         log.info("Request to update seat: seatId={}, newSalonId={}, newRowNumber={}, newSeatNumber={}",
-                id, request.getSalonId(), request.getRowNumber(), request.getSeatNumber());
+                id, salonId, request.getRowNumber(), request.getSeatNumber());
 
         Seat seat = seatRepository.findById(id)
                 .orElseThrow(() -> {
@@ -86,7 +85,6 @@ public class SeatServiceImpl implements SeatService {
                     return new SeatNotFoundException("Seat not found: " + id);
                 });
 
-        UUID salonId = parseUUID(request.getSalonId(), "Invalid salonId: " + request.getSalonId());
         Salon salon = salonRepository.findById(salonId)
                 .orElseThrow(() -> {
                     log.error("Salon not found for seat update. salonId={}", salonId);
@@ -136,15 +134,6 @@ public class SeatServiceImpl implements SeatService {
         if (seatNumber == null || seatNumber < 1) {
             log.error("Invalid seat number: {}", seatNumber);
             throw new InvalidSeatNumberException("Seat number must be at least 1");
-        }
-    }
-
-    private UUID parseUUID(String value, String errorMessage) {
-        try {
-            return UUID.fromString(value);
-        } catch (Exception e) {
-            log.error("Failed to parse UUID from value: {}", value);
-            throw new IllegalArgumentException(errorMessage);
         }
     }
 }

@@ -7,12 +7,17 @@ import com.gosterim360.dto.response.SessionTimeResponseDTO;
 import com.gosterim360.model.Salon;
 import com.gosterim360.model.Session;
 import com.gosterim360.model.SessionTime;
+import com.gosterim360.repository.SalonRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, SessionRequestDTO> {
+
+    private final SalonRepository salonRepository;
 
     @Override
     public SessionResponseDTO toDTO(Session entity) {
@@ -51,8 +56,8 @@ public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, Sessi
                 .build();
 
         if (request.getSalonId() != null) {
-            Salon salon = new Salon();
-            salon.setId(request.getSalonId());
+            Salon salon = salonRepository.findById(request.getSalonId())
+                    .orElseThrow(() -> new RuntimeException("Salon not found with id: " + request.getSalonId()));
             session.setSalon(salon);
         }
 
