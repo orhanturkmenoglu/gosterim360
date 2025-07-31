@@ -17,9 +17,19 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: orhantrkmn14@gmail.com
+    password: rxofikviivohkkju
+
   messages:
     basename: messages
     encoding: UTF-8
+
+
 springdoc:
   api-docs:
     version: openapi_3_0

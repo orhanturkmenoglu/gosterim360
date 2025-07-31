@@ -8,13 +8,19 @@ import com.gosterim360.mapper.ReservationMapper;
 import com.gosterim360.model.Reservation;
 import com.gosterim360.model.Seat;
 import com.gosterim360.model.Session;
+import com.gosterim360.model.User;
+import com.gosterim360.notification.NotificationService;
+import com.gosterim360.payment.PaymentService;
 import com.gosterim360.repository.ReservationRepository;
+import com.gosterim360.repository.UserRepository;
 import com.gosterim360.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,6 +33,11 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final ReservationMapper reservationMapper ;
 
+    private final UserRepository userRepository;
+    private final NotificationService notificationService;
+
+    private final PaymentService paymentService;
+
     @Override
     @Transactional
     public ReservationResponseDTO create(ReservationRequestDTO request) {
@@ -35,16 +46,52 @@ public class ReservationServiceImpl implements ReservationService {
             log.warn("Reservation creation failed: seat already reserved for this session");
             throw new ReservationAlreadyExistsException("This seat is already reserved for the selected session.");
         }
+
         if (request.getStatus() == null || (!request.getStatus().equals(ReservationStatus.PRE_RESERVED) && !request.getStatus().equals(ReservationStatus.PAID))) {
             log.warn("Reservation creation failed: invalid status '{}'", request.getStatus());
             throw new ReservationStatusInvalidException("Invalid reservation status.");
         }
+
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
         Reservation reservation = reservationMapper.toEntity(request);
+        reservation.setUser(user);
         Reservation saved = reservationRepository.saveAndFlush(reservation);
         log.info("Reservation created successfully with id: {}", saved.getId());
 
+        //  Bildirim gönderiliyor
+        notificationService.sendReservationConfirmation(reservation);
+
         return reservationMapper.toDTO(saved);
     }
+
+    /*
+    Evet, bu @Scheduled görev gayet başarılı yazılmış.
+     60 saniyede bir çalışıyor ve oluşturulma süresi
+     1 dakikadan eski olan PRE_RESERVED durumundaki rezervasyonları
+      EXPIRED olarak işaretliyor. Bildirim gönderip DB'ye kaydediyor. 👇
+     */
+    @Scheduled(fixedRate = 300_000) // // her 5 dakikada bir çalışır
+    @Transactional
+    public void  expireUnpaidReservations(){
+        Instant threshold = Instant.now().minusSeconds(300); //  5 dakika önce
+        List<Reservation> expiredReservations = reservationRepository.findExpiredPreReservedReservations(threshold);
+
+        if (expiredReservations.isEmpty()){
+            return;
+        }
+
+        for (Reservation reservation : expiredReservations){
+            reservation.setStatus(ReservationStatus.EXPIRED);
+            log.info("Reservation expired due to timeout. Id: {}", reservation.getId());
+            notificationService.sendReservationExpired(reservation);
+        }
+
+        reservationRepository.saveAll(expiredReservations);
+    }
+
 
     @Override
     @Transactional
