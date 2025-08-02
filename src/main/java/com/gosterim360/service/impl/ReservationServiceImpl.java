@@ -10,8 +10,9 @@ import com.gosterim360.model.Seat;
 import com.gosterim360.model.Session;
 import com.gosterim360.model.User;
 import com.gosterim360.notification.NotificationService;
-import com.gosterim360.payment.PaymentService;
 import com.gosterim360.repository.ReservationRepository;
+import com.gosterim360.repository.SeatRepository;
+import com.gosterim360.repository.SessionRepository;
 import com.gosterim360.repository.UserRepository;
 import com.gosterim360.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +32,13 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final UserRepository userRepository;
+    private final SeatRepository seatRepository;
+    private  final SessionRepository sessionRepository;
     private final ReservationMapper reservationMapper ;
 
-    private final UserRepository userRepository;
     private final NotificationService notificationService;
 
-    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -47,22 +49,33 @@ public class ReservationServiceImpl implements ReservationService {
             throw new ReservationAlreadyExistsException("This seat is already reserved for the selected session.");
         }
 
-        if (request.getStatus() == null || (!request.getStatus().equals(ReservationStatus.PRE_RESERVED) && !request.getStatus().equals(ReservationStatus.PAID))) {
-            log.warn("Reservation creation failed: invalid status '{}'", request.getStatus());
-            throw new ReservationStatusInvalidException("Invalid reservation status.");
-        }
-
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        Seat seat = seatRepository.findById(request.getSeatId())
+                .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
+
+        Session session = sessionRepository.findById(request.getSessionId())
+                .orElseThrow(()->new SessionNotFoundException("Session not found"));
+
         Reservation reservation = reservationMapper.toEntity(request);
         reservation.setUser(user);
+        reservation.setSeat(seat);
+        reservation.setSession(session);
+
+        if (reservation.getStatus() == null || (!reservation.getStatus().equals(ReservationStatus.PRE_RESERVED) && !reservation.getStatus().equals(ReservationStatus.PAID))) {
+            log.warn("Reservation creation failed: invalid status '{}'", reservation.getStatus());
+            throw new ReservationStatusInvalidException("Invalid reservation status.");
+        }
+
         Reservation saved = reservationRepository.saveAndFlush(reservation);
         log.info("Reservation created successfully with id: {}", saved.getId());
 
         //  Bildirim gönderiliyor
-        notificationService.sendReservationConfirmation(reservation);
+        notificationService.sendReservationConfirmation(saved);
+
+        log.info("Reservation created successfully :",saved);
 
         return reservationMapper.toDTO(saved);
     }
@@ -85,7 +98,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         for (Reservation reservation : expiredReservations){
             reservation.setStatus(ReservationStatus.EXPIRED);
-            log.info("Reservation expired due to timeout. Id: {}", reservation.getId());
+            log.info("Expire task ran but no unpaid PRE_RESERVED reservations older than 5 minutes found.");
             notificationService.sendReservationExpired(reservation);
         }
 
@@ -112,8 +125,8 @@ public class ReservationServiceImpl implements ReservationService {
                 throw new ReservationSeatUnavailableException("This seat is already reserved for the selected session.");
             }
         }
-        if (request.getStatus() == null || (!request.getStatus().equals(ReservationStatus.PRE_RESERVED) && !request.getStatus().equals(ReservationStatus.PAID))) {
-            log.warn("Reservation update failed: invalid status '{}'", request.getStatus());
+        if (reservation.getStatus() == null || (!reservation.getStatus().equals(ReservationStatus.PRE_RESERVED) && !reservation.getStatus().equals(ReservationStatus.PAID))) {
+            log.warn("Reservation update failed: invalid status '{}'", reservation.getStatus());
             throw new ReservationStatusInvalidException("Invalid reservation status.");
         }
 
@@ -124,7 +137,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservation.setSession(session);
         reservation.setSeat(seat);
-        reservation.setStatus(request.getStatus());
+        reservation.setStatus(reservation.getStatus());
         Reservation updated = reservationRepository.saveAndFlush(reservation);
         log.info("Reservation updated successfully with id: {}", updated.getId());
         return reservationMapper.toDTO(updated);

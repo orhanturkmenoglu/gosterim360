@@ -17,6 +17,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, UUID> 
 
     boolean existsBySession_IdAndSeat_Id(UUID sessionId, UUID seatId);
 
-    @Query("select r from Reservation  r where r.status=='PRE_RESERVED' and r.createdAt<=:timeoutThreshold")
+    @Query("select r from Reservation  r where r.status='PRE_RESERVED' and r.createdAt<=:timeoutThreshold")
     List<Reservation> findExpiredPreReservedReservations(@Param("timeoutThreshold")Instant timeoutThreshold);
 }

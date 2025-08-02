@@ -33,5 +33,10 @@ public class ReservationResponseDTO {
     @Schema(description = "Last update timestamp of the reservation", example = "2025-07-09T11:15:00Z")
     private Instant updatedAt;
 
+    @Schema(description = "Payment URL for Stripe Checkout to complete the reservation payment", example = "https://checkout.stripe.com/pay/cs_test_123456789")
+    private String paymentUrl;
+
+    @Schema(description = "Informational message regarding the payment or reservation status", example = "Lütfen ödemeyi tamamlamak için aşağıdaki bağlantıya tıklayın.")
+    private String message;
 
 }

@@ -1,7 +1,6 @@
 package com.gosterim360.common;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
