@@ -4,6 +4,7 @@ import com.gosterim360.common.BaseMapper;
 import com.gosterim360.dto.request.SessionRequestDTO;
 import com.gosterim360.dto.response.SessionResponseDTO;
 import com.gosterim360.dto.response.SessionTimeResponseDTO;
+import com.gosterim360.model.Movie;
 import com.gosterim360.model.Salon;
 import com.gosterim360.model.Session;
 import com.gosterim360.model.SessionTime;
@@ -26,6 +27,7 @@ public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, Sessi
             return null;
         }
 
+
         List<SessionTimeResponseDTO> timeDTOs = entity.getTimes().stream()
                 .map(time -> SessionTimeResponseDTO.builder()
                         .id(time.getId())
@@ -35,6 +37,13 @@ public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, Sessi
                         .updatedAt(time.getUpdatedAt())
                         .build())
                 .toList();
+
+
+        String movieName = null;
+
+        if (entity.getMovie() !=null){
+            movieName=entity.getMovie().getName();
+        }
 
         return SessionResponseDTO.builder()
                 .id(entity.getId())
@@ -91,6 +100,8 @@ public class SessionMapper extends BaseMapper<Session, SessionResponseDTO, Sessi
                                 .time(timeDto.getTime())
                                 .build())
                 .toList();
+
+
 
         return Session.builder()
                 .times(sessionTimes)

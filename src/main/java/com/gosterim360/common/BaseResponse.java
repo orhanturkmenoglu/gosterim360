@@ -41,6 +41,15 @@ public class BaseResponse<T> {
                 .build();
     }
 
+    public static <T> BaseResponse<T> failure(String message,int status){
+        return BaseResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .status(status)
+                .timestamp(Instant.now())
+                .build();
+    }
+
     public static <T> BaseResponse<T> failure(String message, int status, String path, List<String> errors){
         return BaseResponse.<T>builder()
                 .success(false)

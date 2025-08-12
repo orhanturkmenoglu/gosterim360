@@ -33,6 +33,7 @@ public class Reservation extends BaseEntity<UUID> {
     @JoinColumn(name = "user_id")
     private User user;
 
+
     // user_id eklenecek.
     // yani hangi kullanıcının rezerve ettiği görülecek.
     // ticket alanı olacak bilet

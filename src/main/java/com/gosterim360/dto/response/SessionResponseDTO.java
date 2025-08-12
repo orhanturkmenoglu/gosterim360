@@ -23,6 +23,7 @@ public class SessionResponseDTO {
     @Schema(description = "Session date", example = "2025-07-05")
     private LocalDate date;
 
+
     @Schema(description = "List of session times")
     private List<SessionTimeResponseDTO> times;
 

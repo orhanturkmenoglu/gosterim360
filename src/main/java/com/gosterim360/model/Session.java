@@ -25,7 +25,7 @@ public class Session extends BaseEntity<UUID> {
     private List<SessionTime> times = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "movie_id",nullable = false)
+    @JoinColumn(name = "movie_id")
     private  Movie movie;
 
     @ManyToOne

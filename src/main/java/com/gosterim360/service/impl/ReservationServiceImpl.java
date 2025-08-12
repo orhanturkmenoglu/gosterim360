@@ -8,13 +8,20 @@ import com.gosterim360.mapper.ReservationMapper;
 import com.gosterim360.model.Reservation;
 import com.gosterim360.model.Seat;
 import com.gosterim360.model.Session;
+import com.gosterim360.model.User;
+import com.gosterim360.notification.NotificationService;
 import com.gosterim360.repository.ReservationRepository;
+import com.gosterim360.repository.SeatRepository;
+import com.gosterim360.repository.SessionRepository;
+import com.gosterim360.repository.UserRepository;
 import com.gosterim360.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,7 +32,13 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final UserRepository userRepository;
+    private final SeatRepository seatRepository;
+    private  final SessionRepository sessionRepository;
     private final ReservationMapper reservationMapper ;
+
+    private final NotificationService notificationService;
+
 
     @Override
     @Transactional
@@ -35,16 +48,63 @@ public class ReservationServiceImpl implements ReservationService {
             log.warn("Reservation creation failed: seat already reserved for this session");
             throw new ReservationAlreadyExistsException("This seat is already reserved for the selected session.");
         }
-        if (request.getStatus() == null || (!request.getStatus().equals(ReservationStatus.PRE_RESERVED) && !request.getStatus().equals(ReservationStatus.PAID))) {
-            log.warn("Reservation creation failed: invalid status '{}'", request.getStatus());
+
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Seat seat = seatRepository.findById(request.getSeatId())
+                .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
+
+        Session session = sessionRepository.findById(request.getSessionId())
+                .orElseThrow(()->new SessionNotFoundException("Session not found"));
+
+        Reservation reservation = reservationMapper.toEntity(request);
+        reservation.setUser(user);
+        reservation.setSeat(seat);
+        reservation.setSession(session);
+
+        if (reservation.getStatus() == null || (!reservation.getStatus().equals(ReservationStatus.PRE_RESERVED) && !reservation.getStatus().equals(ReservationStatus.PAID))) {
+            log.warn("Reservation creation failed: invalid status '{}'", reservation.getStatus());
             throw new ReservationStatusInvalidException("Invalid reservation status.");
         }
-        Reservation reservation = reservationMapper.toEntity(request);
+
         Reservation saved = reservationRepository.saveAndFlush(reservation);
         log.info("Reservation created successfully with id: {}", saved.getId());
 
+        //  Bildirim gönderiliyor
+        notificationService.sendReservationConfirmation(saved);
+
+        log.info("Reservation created successfully :",saved);
+
         return reservationMapper.toDTO(saved);
     }
+
+    /*
+    Evet, bu @Scheduled görev gayet başarılı yazılmış.
+     60 saniyede bir çalışıyor ve oluşturulma süresi
+     1 dakikadan eski olan PRE_RESERVED durumundaki rezervasyonları
+      EXPIRED olarak işaretliyor. Bildirim gönderip DB'ye kaydediyor. 👇
+     */
+    @Scheduled(fixedRate = 300_000) // // her 5 dakikada bir çalışır
+    @Transactional
+    public void  expireUnpaidReservations(){
+        Instant threshold = Instant.now().minusSeconds(300); //  5 dakika önce
+        List<Reservation> expiredReservations = reservationRepository.findExpiredPreReservedReservations(threshold);
+
+        if (expiredReservations.isEmpty()){
+            return;
+        }
+
+        for (Reservation reservation : expiredReservations){
+            reservation.setStatus(ReservationStatus.EXPIRED);
+            log.info("Expire task ran but no unpaid PRE_RESERVED reservations older than 5 minutes found.");
+            notificationService.sendReservationExpired(reservation);
+        }
+
+        reservationRepository.saveAll(expiredReservations);
+    }
+
 
     @Override
     @Transactional
@@ -65,8 +125,8 @@ public class ReservationServiceImpl implements ReservationService {
                 throw new ReservationSeatUnavailableException("This seat is already reserved for the selected session.");
             }
         }
-        if (request.getStatus() == null || (!request.getStatus().equals(ReservationStatus.PRE_RESERVED) && !request.getStatus().equals(ReservationStatus.PAID))) {
-            log.warn("Reservation update failed: invalid status '{}'", request.getStatus());
+        if (reservation.getStatus() == null || (!reservation.getStatus().equals(ReservationStatus.PRE_RESERVED) && !reservation.getStatus().equals(ReservationStatus.PAID))) {
+            log.warn("Reservation update failed: invalid status '{}'", reservation.getStatus());
             throw new ReservationStatusInvalidException("Invalid reservation status.");
         }
 
@@ -77,7 +137,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservation.setSession(session);
         reservation.setSeat(seat);
-        reservation.setStatus(request.getStatus());
+        reservation.setStatus(reservation.getStatus());
         Reservation updated = reservationRepository.saveAndFlush(reservation);
         log.info("Reservation updated successfully with id: {}", updated.getId());
         return reservationMapper.toDTO(updated);

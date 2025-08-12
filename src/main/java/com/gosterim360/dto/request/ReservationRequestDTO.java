@@ -27,9 +27,4 @@ public class ReservationRequestDTO {
     @Schema(description = "Unique identifier of the seat to be reserved", example = "b2c3d4e5-6789-01ab-cdef-2345678901bc")
     @NotNull(message = "Seat ID must not be null")
     private UUID seatId;
-
-    @Schema(description = "Status of the reservation. Allowed values: PRE_RESERVED, PAID", example = "PRE_RESERVED")
-    @NotNull(message = "Status must not be null")
-    private ReservationStatus status;
-
 }

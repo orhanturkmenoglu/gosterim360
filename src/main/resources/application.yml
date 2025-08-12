@@ -17,11 +17,34 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: orhantrkmn14@gmail.com
+    password: rxofikviivohkkju
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
   messages:
     basename: messages
     encoding: UTF-8
+
+
 springdoc:
   api-docs:
     version: openapi_3_0
     path: /swagger-ui.html
 
+stripe:
+  apiKey: sk_test_51QxAPmKieq4XdVhZL0m4d6igCJXwG7Y0FBx1GGGVcLSy8Zabv1pAjb4SiWuor25LOFum96diIn8JFWGrASeeGuRq00IotgeVMJ
